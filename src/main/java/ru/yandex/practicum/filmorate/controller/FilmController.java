@@ -24,7 +24,7 @@ public class FilmController {
     @PostMapping
     public Film create(@NotNull @Valid @RequestBody Film film) {
         log.info("POST req received: {}", film);
-        validator.filmValidator(film);
+        validator.filmValidate(film);
         id++;
         film.setId(id);
         films.put(film.getId(), film);
@@ -40,7 +40,7 @@ public class FilmController {
             log.error("Film does not exists");
             throw new ValidationException("Film does not exists");
         }
-        validator.filmValidator(film);
+        validator.filmValidate(film);
         log.info("Film updated");
         films.put(film.getId(), film);
         return film;

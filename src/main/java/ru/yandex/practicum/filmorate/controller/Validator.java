@@ -10,10 +10,9 @@ import java.time.LocalDate;
 @Slf4j
 public class Validator {
 
-    private final LocalDate currentDate = LocalDate.now();
     private static final LocalDate EARLIEST_DATE = LocalDate.of(1895, 12, 28);
 
-    public void userValidator(User user) {
+    public void userValidate(User user) {
         if (user.getEmail().isEmpty() || user.getEmail().isBlank()) {
             log.error("User email is empty. {}", user.getLogin());
             throw new ValidationException("User email is empty.");
@@ -29,13 +28,13 @@ public class Validator {
             user.setName(user.getLogin());
         }
 
-        if (user.getBirthday().isAfter(currentDate)) {
+        if (user.getBirthday().isAfter(UserController.getCurrentDate())) {
             log.error("User WrongDate. {}", user.getName());
             throw new ValidationException("User WrongDate.");
         }
     }
 
-    public void filmValidator(Film film) {
+    public void filmValidate(Film film) {
         if (film.getName() == null || film.getName().isEmpty() || film.getName().isBlank()) {
             log.error("Film title is empty. {}", film.getId());
             throw new ValidationException("Film title is empty.");

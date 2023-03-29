@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,11 @@ public class UserController {
     private final Map<Integer, User> users = new HashMap<>();
     private final List<String> userMails = new ArrayList<>();
     private final Validator validator = new Validator();
+    private static final LocalDate currentDate = LocalDate.now();
+
+    public static LocalDate getCurrentDate() {
+        return currentDate;
+    }
     private int id = 0;
 
     @RequestMapping
@@ -37,7 +43,7 @@ public class UserController {
             throw new ValidationException("User already exists");
         }
 
-        validator.userValidator(user);
+        validator.userValidate(user);
         id++;
         user.setId(id);
         users.put(user.getId(), user);
@@ -57,7 +63,7 @@ public class UserController {
         if (!users.containsValue(user)) {
             users.put(user.getId(), user);
         }
-        validator.userValidator(user);
+        validator.userValidate(user);
         log.debug("List size: {}", users.size());
         return user;
     }
