@@ -22,12 +22,11 @@ public class UserController {
     private final List<String> userMails = new ArrayList<>();
     private final Validator validator = new Validator();
     private static final LocalDate currentDate = LocalDate.now();
+    private int id = 0;
 
     public static LocalDate getCurrentDate() {
         return currentDate;
     }
-
-    private int id = 0;
 
     @RequestMapping
     public List<User> findAllUsers() {
