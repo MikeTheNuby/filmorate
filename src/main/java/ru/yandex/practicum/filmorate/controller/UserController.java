@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,12 +20,7 @@ public class UserController {
     private final Map<Integer, User> users = new HashMap<>();
     private final List<String> userMails = new ArrayList<>();
     private final Validator validator = new Validator();
-    private static final LocalDate currentDate = LocalDate.now();
     private int id = 0;
-
-    public static LocalDate getCurrentDate() {
-        return currentDate;
-    }
 
     @RequestMapping
     public List<User> findAllUsers() {

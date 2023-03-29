@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 
 @Slf4j
 public class Validator {
@@ -28,7 +29,8 @@ public class Validator {
             user.setName(user.getLogin());
         }
 
-        if (user.getBirthday().isAfter(UserController.getCurrentDate())) {
+        if (user.getBirthday().atStartOfDay(ZoneOffset.of("+03:00")).toInstant().toEpochMilli()
+                >= System.currentTimeMillis()) {
             log.error("User WrongDate. {}", user.getName());
             throw new ValidationException("User WrongDate.");
         }
