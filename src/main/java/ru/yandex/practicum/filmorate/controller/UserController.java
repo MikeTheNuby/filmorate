@@ -26,6 +26,7 @@ public class UserController {
     public static LocalDate getCurrentDate() {
         return currentDate;
     }
+
     private int id = 0;
 
     @RequestMapping
