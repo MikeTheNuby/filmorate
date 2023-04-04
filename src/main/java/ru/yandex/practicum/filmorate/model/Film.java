@@ -11,13 +11,13 @@ import java.time.LocalDate;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class Film {
 
-    String name;
     @Min(value = 0, message = "Значение id не может быть отрицательным.")
-    int id;
+    private int id;
+    private String name;
     @Size(max = 200, message = "Размер описания превышает допустимый.")
-    String description;
+    private String description;
     @PastOrPresent
-    LocalDate releaseDate;
+    private LocalDate releaseDate;
     @Positive(message = "Длительность фильма не может быть отрицательной.")
-    long duration;
+    private long duration;
 }

@@ -13,13 +13,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FilmStorageTest {
     FilmController controller;
-    Film film1 = new Film("Film-1", 1, "Good movie-1",
+    Film film1 = new Film(1, "Film-1", "Good movie-1",
             LocalDate.of(2003, 12, 11), 120
     );
-    Film film2 = new Film("Film-2", 2, "Good movie-2",
+    Film film2 = new Film(2, "Film-2", "Good movie-2",
             LocalDate.of(2000, 10, 8), 64
     );
-    Film film3 = new Film("Film-3", 2, "Good movie-3",
+    Film film3 = new Film(3, "Film-3", "Good movie-3",
             LocalDate.of(1998, 5, 18), 264
     );
 

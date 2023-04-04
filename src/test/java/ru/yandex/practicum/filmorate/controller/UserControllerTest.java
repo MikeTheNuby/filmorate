@@ -13,13 +13,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class UserControllerTest {
 
     UserController controller;
-    User user1 = new User("User-1", 1, "e487837708@fireboxmail.lol", "login-1",
+    User user1 = new User(1, "User-1", "login-1", "e487837708@fireboxmail.lol",
             LocalDate.of(1980, 4, 12)
     );
-    User user2 = new User("User-2", 2, "a52aeeb878@fireboxmail.lol", "login-2",
+    User user2 = new User(2, "User-2", "login-2", "a52aeeb878@fireboxmail.lol",
             LocalDate.of(1992, 11, 22)
     );
-    User user3 = new User("User-3", 3, "cbad71c5ee@fireboxmail.lol", "login-3",
+    User user3 = new User(3, "User-3", "login-3", "cbad71c5ee@fireboxmail.lol",
             LocalDate.of(2001, 7, 7)
     );
 
