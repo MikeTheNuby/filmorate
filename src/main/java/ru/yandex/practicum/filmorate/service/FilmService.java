@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.Validator;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
@@ -29,6 +30,19 @@ public class FilmService {
         film.setId(id);
         filmStorage.create(film);
         log.info("Film created");
+        return film;
+    }
+
+    public Film update(Film film) {
+        log.info("PUT req received: {}", film);
+
+        if (!filmStorage.getFilms().containsKey(film.getId())) {
+            log.error("Film does not exists");
+            throw new ValidationException("Film does not exists");
+        }
+        validator.filmValidate(film);
+        log.info("Film updated");
+        filmStorage.getFilms().put(film.getId(), film);
         return film;
     }
 }

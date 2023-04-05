@@ -91,7 +91,7 @@ class FilmControllerTest {
         assertEquals(1, duration);
     }
 
-/*    @Test
+    @Test
     void shouldUpdateFilm() {
         filmService.create(film1);
         assertEquals(1, filmService.findAllFilms().size());
@@ -100,15 +100,15 @@ class FilmControllerTest {
         filmService.update(film1);
         assertEquals(1, filmService.findAllFilms().size());
         assertEquals("newFilm-1", filmService.findAllFilms().get(0).getName());
-    }*/
+    }
 
-/*    @Test
+    @Test
     void shouldNotFilmUpdateWithFailName() {
         film2.setName("");
         Assertions.assertThrows(ValidationException.class, () -> filmService.update(film2));
-    }*/
+    }
 
-/*    @Test
+    @Test
     void shouldNotFilmUpdateWithFailDescription() {
         filmService.create(film1);
         String longDescription = "Суперагент британской разведки Орсон Форчун наслаждался заслуженным " +
@@ -117,16 +117,16 @@ class FilmControllerTest {
                 "оперативников, Орсон выходит на посредника в готовящейся сделке продажи";
         film1.setDescription(longDescription);
         Assertions.assertThrows(ValidationException.class, () -> filmService.update(film1));
-    }*/
+    }
 
-/*    @Test
+    @Test
     void shouldNotFilmUpdateWithFailReliesDate() {
         filmService.create(film1);
         film1.setReleaseDate(LocalDate.of(1895, 12, 27));
         Assertions.assertThrows(ValidationException.class, () -> filmService.update(film1));
-    }*/
+    }
 
-/*    @Test
+    @Test
     void shouldNotFilmUpdateWithFailDuration() {
         filmService.create(film1);
         filmService.create(film2);
@@ -141,5 +141,5 @@ class FilmControllerTest {
         filmService.update(film3);
         long duration = assertDoesNotThrow(() -> film3.getDuration());
         assertEquals(1, duration);
-    }*/
+    }
 }

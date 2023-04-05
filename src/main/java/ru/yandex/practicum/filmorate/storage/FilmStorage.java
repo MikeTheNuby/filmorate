@@ -11,7 +11,7 @@ public interface FilmStorage {
 
     void create(@NotNull @Valid @RequestBody Film film);
 
-    //Film update(@NotNull @Valid @RequestBody Film film);
+    void update(@NotNull @Valid @RequestBody Film film);
 
     List<Film> findAllFilms();
 }
