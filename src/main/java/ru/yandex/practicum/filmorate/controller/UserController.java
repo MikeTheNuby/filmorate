@@ -30,9 +30,8 @@ public class UserController {
         return userService.create(user);
     }
 
-/*    @PutMapping
+    @PutMapping
     public User update(@NotNull @Valid @RequestBody User user) {
         return userService.update(user);
-
-    }*/
+    }
 }

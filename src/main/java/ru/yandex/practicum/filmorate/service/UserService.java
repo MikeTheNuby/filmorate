@@ -39,6 +39,20 @@ public class UserService {
         log.info("User added {}", user);
         return user;
     }
+
+    public User update(User user) {
+        if (!userStorage.getUsers().containsKey(user.getId())) {
+            log.debug("Key not found : {}", user.getId());
+            throw new ValidationException("Key not found.");
+        }
+
+        if (!userStorage.getUsers().containsValue(user)) {
+            userStorage.getUsers().put(user.getId(), user);
+        }
+        validator.userValidate(user);
+        log.debug("List size: {}", userStorage.getUsers().size());
+        return user;
+    }
 }
 
  /*

@@ -15,8 +15,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Integer, User> users = new HashMap<>();
     private final List<String> userMails = new ArrayList<>();
-    // private final Validator validator = new Validator();
-    // private int id = 0;
 
     @Override
     public Map<Integer, User> getUsers() {
@@ -40,18 +38,11 @@ public class InMemoryUserStorage implements UserStorage {
         userMails.add(user.getEmail());
     }
 
-/*    @Override
-    public User update(User user) {
-        if (!users.containsKey(user.getId())) {
-            log.debug("Key not found : {}", user.getId());
-            throw new ValidationException("Key not found.");
+    @Override
+    public void update(User user) {
+        users.put(user.getId(), user);
+        if (!userMails.contains(user.getEmail())) {
+            userMails.add(user.getEmail());
         }
-
-        if (!users.containsValue(user)) {
-            users.put(user.getId(), user);
-        }
-        validator.userValidate(user);
-        log.debug("List size: {}", users.size());
-        return user;
-    }*/
+    }
 }

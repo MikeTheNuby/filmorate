@@ -18,5 +18,5 @@ public interface UserStorage {
 
     void create(@NotNull @Valid @RequestBody User user);
 
-    //User update(@NotNull @Valid @RequestBody User user);
+    void update(@NotNull @Valid @RequestBody User user);
 }
