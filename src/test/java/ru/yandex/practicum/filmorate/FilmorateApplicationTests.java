@@ -15,6 +15,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @SpringBootTest
 class FilmorateApplicationTests {
 
+    FilmController filmController;
     UserController userController;
     UserService userService;
     UserStorage userStorage;
@@ -22,6 +23,7 @@ class FilmorateApplicationTests {
 
     @BeforeEach
     public void start() {
+        filmController = new FilmController();
         userStorage = new InMemoryUserStorage();
         validator = new Validator();
         userService = new UserService(userStorage, validator);
@@ -31,6 +33,6 @@ class FilmorateApplicationTests {
     @Test
     public void contextLoads() {
         assertThat(userController).isNotNull();
-        //assertThat(filmController).isNotNull();
+        assertThat(filmController).isNotNull();
     }
 }

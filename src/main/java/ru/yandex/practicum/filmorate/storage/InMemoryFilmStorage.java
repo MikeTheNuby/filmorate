@@ -15,9 +15,13 @@ import java.util.Map;
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
 
-    private final Validator validator = new Validator();
     private final Map<Integer, Film> films = new HashMap<>();
-    private int id = 0;
+    //private final Validator validator = new Validator();
+    //private int id = 0;
+
+    public Map<Integer, Film> getFilms() {
+        return films;
+    }
 
     @Override
     public List<Film> findAllFilms() {
@@ -26,17 +30,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film create(Film film) {
-        log.info("POST req received: {}", film);
-        validator.filmValidate(film);
-        id++;
-        film.setId(id);
+    public void create(Film film) {
         films.put(film.getId(), film);
-        log.info("Film updated");
-        return film;
     }
 
-    @Override
+/*    @Override
     public Film update(Film film) {
         log.info("PUT req received: {}", film);
 
@@ -48,5 +46,5 @@ public class InMemoryFilmStorage implements FilmStorage {
         log.info("Film updated");
         films.put(film.getId(), film);
         return film;
-    }
+    }*/
 }

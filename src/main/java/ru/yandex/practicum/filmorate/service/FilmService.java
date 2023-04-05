@@ -2,11 +2,35 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.controller.Validator;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
 public class FilmService {
 
+    InMemoryFilmStorage filmStorage = new InMemoryFilmStorage();
+    private final Validator validator = new Validator();
+    private int id = 0;
+
+    public List<Film> findAllFilms() {
+        log.info("{} films has been saved", filmStorage.getFilms().size());
+        return new ArrayList<>(filmStorage.getFilms().values());
+    }
+
+    public Film create(Film film) {
+        log.info("POST req received: {}", film);
+        validator.filmValidate(film);
+        id++;
+        film.setId(id);
+        filmStorage.create(film);
+        log.info("Film created");
+        return film;
+    }
 }
 
  /*

@@ -35,7 +35,6 @@ public class UserService {
         id++;
         user.setId(id);
         userStorage.create(user);
-        //userMails.add(user.getEmail());
         log.info("User added {}", user);
         return user;
     }

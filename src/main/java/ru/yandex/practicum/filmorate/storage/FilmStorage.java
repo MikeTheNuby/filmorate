@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface FilmStorage {
 
-    Film create(@NotNull @Valid @RequestBody Film film);
+    void create(@NotNull @Valid @RequestBody Film film);
 
-    Film update(@NotNull @Valid @RequestBody Film film);
+    //Film update(@NotNull @Valid @RequestBody Film film);
 
     List<Film> findAllFilms();
 }
