@@ -50,6 +50,7 @@ public class UserService {
             userStorage.getUsers().put(user.getId(), user);
         }
         validator.userValidate(user);
+        validator.removeAbandonedEmails();
         log.debug("List size: {}", userStorage.getUsers().size());
         return user;
     }

@@ -1,18 +1,26 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @Slf4j
 public class Validator {
 
+    private final UserStorage userStorage = new InMemoryUserStorage();
     private static final LocalDate EARLIEST_DATE = LocalDate.of(1895, 12, 28);
 
     public void userValidate(User user) {
@@ -60,5 +68,14 @@ public class Validator {
         }
     }
 
+    public void removeAbandonedEmails() {
+        List<String> rawUserMails = userStorage.getUserMails();
+        List<String> actualUserMails = new ArrayList<>();
 
+        for (User i : userStorage.getUsers().values()) {
+            actualUserMails.add(i.getEmail());
+        }
+
+        rawUserMails.removeIf(i -> !actualUserMails.contains(i));
+    }
 }
