@@ -2,8 +2,6 @@ package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.controller.Validator;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.ArrayList;
@@ -17,8 +15,18 @@ public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Integer, User> users = new HashMap<>();
     private final List<String> userMails = new ArrayList<>();
-    private final Validator validator = new Validator();
-    private int id = 0;
+    // private final Validator validator = new Validator();
+    // private int id = 0;
+
+    @Override
+    public Map<Integer, User> getUsers() {
+        return users;
+    }
+
+    @Override
+    public List<String> getUserMails() {
+        return userMails;
+    }
 
     @Override
     public List<User> findAllUsers() {
@@ -27,24 +35,12 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User create(User user) {
-        log.info("Post req received: {}", user);
-
-        if (userMails.contains(user.getEmail())) {
-            log.error("User already exists");
-            throw new ValidationException("User already exists");
-        }
-
-        validator.userValidate(user);
-        id++;
-        user.setId(id);
+    public void create(User user) {
         users.put(user.getId(), user);
         userMails.add(user.getEmail());
-        log.info("User added {}", user);
-        return user;
     }
 
-    @Override
+/*    @Override
     public User update(User user) {
         if (!users.containsKey(user.getId())) {
             log.debug("Key not found : {}", user.getId());
@@ -57,5 +53,5 @@ public class InMemoryUserStorage implements UserStorage {
         validator.userValidate(user);
         log.debug("List size: {}", users.size());
         return user;
-    }
+    }*/
 }

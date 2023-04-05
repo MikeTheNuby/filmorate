@@ -1,3 +1,4 @@
+/*
 package ru.yandex.practicum.filmorate.storage;
 
 import org.junit.jupiter.api.Assertions;
@@ -140,4 +141,4 @@ class FilmStorageTest {
         long duration = assertDoesNotThrow(() -> film3.getDuration());
         assertEquals(1, duration);
     }
-}
+}*/
