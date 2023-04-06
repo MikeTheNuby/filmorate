@@ -45,8 +45,9 @@ public class InMemoryUserStorage implements UserStorage {
             userMails.add(user.getEmail());
         }
     }
+
     @Override
-    public User getUserById(int id){
+    public User getUserById(int id) {
         return users.get(id);
     }
 }
