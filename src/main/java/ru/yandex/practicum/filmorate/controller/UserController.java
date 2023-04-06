@@ -54,4 +54,10 @@ public class UserController {
     public Set<Integer> getFriendsList(@PathVariable int id) {
         return userService.getFriendsList(id);
     }
+
+    @RequestMapping("/{id}/friends/common/{otherId}")
+    public Set<User> getFriendsList(@PathVariable int id, @PathVariable int otherId) {
+        return userService.getCommonFriendsList(id, otherId);
+    }
+// "/users/{id}/friends/common/{otherId}"
 }

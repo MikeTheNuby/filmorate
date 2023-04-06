@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -86,11 +87,25 @@ public class UserService {
         User user = userStorage.getUsers().get(id);
         return user.getFriends();
     }
+
+    public Set<User> getCommonFriendsList(int id, int otherId) {
+        User userFirst = userStorage.getUsers().get(id);
+        User userSecond = userStorage.getUsers().get(otherId);
+        userFirst.getFriends().retainAll(userSecond.getFriends());
+        Set<Integer> userFriendsCopy = new HashSet<>(userFirst.getFriends());
+        Set<User> userSet = new HashSet<>();
+        userFriendsCopy
+                .forEach(integer -> userSet.add(userStorage.getUserById(integer)));
+
+        return userSet;
+    }
+
+
 }
 
  /*
 + PUT /users/{id}/friends/{friendId}  — добавление в друзья.
 + DELETE /users/{id}/friends/{friendId} — удаление из друзей.
-- GET /users/{id}/friends — возвращаем список пользователей, являющихся его друзьями.
++ GET /users/{id}/friends — возвращаем список пользователей, являющихся его друзьями.
 - GET /users/{id}/friends/common/{otherId} — список друзей, общих с другим пользователем
  */
