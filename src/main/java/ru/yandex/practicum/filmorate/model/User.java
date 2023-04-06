@@ -1,9 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -11,8 +8,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
+
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+//@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class User {
 
     @Min(value = 0, message = "Значение id не может быть отрицательным.")

@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.Validator;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -13,11 +14,17 @@ import java.util.List;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
+
 public class UserService {
     private final UserStorage userStorage;
     private final Validator validator;
     private Integer id = 0;
+
+    @Autowired
+    public UserService(UserStorage userStorage, Validator validator) {
+        this.userStorage = userStorage;
+        this.validator = validator;
+    }
 
     public List<User> findAllUsers() {
        return userStorage.findAllUsers();
@@ -51,6 +58,16 @@ public class UserService {
         validator.userValidate(user);
         validator.removeAbandonedEmails();
         log.debug("List size: {}", userStorage.getUsers().size());
+        return user;
+    }
+
+    public User addFriend(int id, int friendId){
+        User user = userStorage.getUsers().get(id);
+        User friend = userStorage.getUsers().get(friendId);
+
+        user.getFriends().add(friendId);
+        friend.getFriends().add(id);
+
         return user;
     }
 }

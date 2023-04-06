@@ -14,11 +14,15 @@ import java.util.List;
 
 @RestController
 @Slf4j
-@AllArgsConstructor
+
 @RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @RequestMapping
     public List<User> findAllUsers() {
@@ -33,5 +37,10 @@ public class UserController {
     @PutMapping
     public User update(@NotNull @Valid @RequestBody User user) {
         return userService.update(user);
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public User addFriend(@PathVariable("id") int id, @PathVariable("friendId") int friendId) {
+        return userService.addFriend(id, friendId);
     }
 }
