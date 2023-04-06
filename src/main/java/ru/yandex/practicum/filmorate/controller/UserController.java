@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @Slf4j
@@ -47,5 +48,10 @@ public class UserController {
     @DeleteMapping("/{id}/friends/{friendId}")
     public User removeFriend(@PathVariable("id") int id, @PathVariable("friendId") int friendId) {
         return userService.removeFriend(id, friendId);
+    }
+
+    @RequestMapping("/{id}/friends")
+    public Set<Integer> getFriendsList(@PathVariable int id) {
+        return userService.getFriendsList(id);
     }
 }

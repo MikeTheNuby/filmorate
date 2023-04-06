@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -79,6 +80,11 @@ public class UserService {
         friend.getFriends().remove(id);
 
         return user;
+    }
+
+    public Set<Integer> getFriendsList(int id) {
+        User user = userStorage.getUsers().get(id);
+        return user.getFriends();
     }
 }
 
