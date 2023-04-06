@@ -70,13 +70,21 @@ public class UserService {
 
         return user;
     }
+
+    public User removeFriend(int id, int friendId){
+        User user = userStorage.getUsers().get(id);
+        User friend = userStorage.getUsers().get(friendId);
+
+        user.getFriends().remove(friendId);
+        friend.getFriends().remove(id);
+
+        return user;
+    }
 }
 
  /*
- log.debug("List size: {}", users.size());
-добавление в друзья,
-удаление из друзей,
-вывод списка общих друзей.
-в друзья — добавляем сразу.
-Лена стала другом Саши, то это значит, что Саша теперь друг Лены.
++ PUT /users/{id}/friends/{friendId}  — добавление в друзья.
++ DELETE /users/{id}/friends/{friendId} — удаление из друзей.
+- GET /users/{id}/friends — возвращаем список пользователей, являющихся его друзьями.
+- GET /users/{id}/friends/common/{otherId} — список друзей, общих с другим пользователем
  */
