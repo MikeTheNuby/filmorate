@@ -8,9 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
-//@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class User {
 
     @Min(value = 0, message = "Значение id не может быть отрицательным.")
