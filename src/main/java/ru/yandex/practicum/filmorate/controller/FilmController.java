@@ -45,4 +45,9 @@ public class FilmController {
     public ResponseEntity<Film> removeLike(@PathVariable int id, @PathVariable int userId) {
         return filmService.removeLike(id, userId);
     }
-}
+
+    @GetMapping("/popular")
+    public ResponseEntity<List<Film>> getPopularFilm(@RequestParam(required = false, defaultValue = "10", name = "count") int count) {
+        return filmService.getPopularFilms(count);
+    }
+} // GET /films/popular?count={count}

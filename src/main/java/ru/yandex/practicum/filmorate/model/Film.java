@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
-public class Film {
+public class Film implements Comparable<Film> {
 
     @Min(value = 0, message = "Значение id не может быть отрицательным.")
     private int id;
@@ -23,4 +23,9 @@ public class Film {
     @Positive(message = "Длительность фильма не может быть отрицательной.")
     private long duration;
     private final Set<Integer> likes = new HashSet<>();
+
+    @Override
+    public int compareTo(Film o) {
+        return this.likes.size() - o.likes.size();
+    }
 }

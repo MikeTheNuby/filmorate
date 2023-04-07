@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.controller.Validator;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -13,6 +14,7 @@ import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -87,6 +89,15 @@ public class FilmService {
             log.info("User {} or film {} not found", id, userId);
             return new ResponseEntity<>(film, HttpStatus.NOT_FOUND);
         }
+    }
+
+    public ResponseEntity<List<Film>> getPopularFilms(int count) {
+        List<Film> films = new ArrayList<>(filmStorage.findAllFilms());
+        films.sort(Film::compareTo);
+        Collections.reverse(films);
+        count = Math.min(count, films.size());
+        return new ResponseEntity<>(films.subList(0, count), HttpStatus.OK);
+
     }
 }
 
