@@ -6,14 +6,21 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FilmControllerTest {
 
     FilmService filmService;
+    InMemoryFilmStorage filmStorage;
+    UserStorage userStorage;
+    Validator validator;
 
     Film film1 = new Film(1, "Film-1", "Good movie-1",
             LocalDate.of(2003, 12, 11), 120
@@ -27,7 +34,10 @@ class FilmControllerTest {
 
     @BeforeEach
     void setUp() {
-        filmService = new FilmService();
+        filmStorage = new InMemoryFilmStorage();
+        userStorage = new InMemoryUserStorage();
+        validator = new Validator();
+        filmService = new FilmService(filmStorage, userStorage, validator);
 
     }
 

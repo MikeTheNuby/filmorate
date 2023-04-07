@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -14,7 +15,11 @@ import java.util.List;
 @Slf4j
 public class FilmController {
 
-    FilmService filmService = new FilmService();
+    FilmService filmService;
+
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
 
     @PostMapping
     public Film create(@NotNull @Valid @RequestBody Film film) {
@@ -29,5 +34,10 @@ public class FilmController {
     @GetMapping
     public List<Film> findAllFilms() {
         return filmService.findAllFilms();
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public ResponseEntity<Film>addLike(@PathVariable int id, @PathVariable int userId){
+        return filmService.addLike(id, userId);
     }
 }

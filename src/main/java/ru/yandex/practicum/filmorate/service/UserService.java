@@ -23,7 +23,7 @@ public class UserService {
 
     private final UserStorage userStorage;
     private final Validator validator;
-    private Integer id = 0;
+    private int id = 0;
 
     @Autowired
     public UserService(UserStorage userStorage, Validator validator) {
