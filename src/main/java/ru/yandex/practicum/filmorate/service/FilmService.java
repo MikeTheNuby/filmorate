@@ -73,11 +73,26 @@ public class FilmService {
             return new ResponseEntity<>(film, HttpStatus.NOT_FOUND);
         }
     }
+
+    public ResponseEntity<Film> removeLike(int id, int userId) {
+        Film film = filmStorage.getFilms().get(id);
+        User user = userStorage.getUsers().get(userId);
+
+        if (film != null && user != null) {
+            film.getLikes().remove(userId);
+            log.info("User {} deleted like to {} film", user, film);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        else {
+            log.info("User {} or film {} not found", id, userId);
+            return new ResponseEntity<>(film, HttpStatus.NOT_FOUND);
+        }
+    }
 }
 
  /*
-PUT /films/{id}/like/{userId}  — пользователь ставит лайк фильму.
-DELETE /films/{id}/like/{userId}  — пользователь удаляет лайк.
++ PUT /films/{id}/like/{userId}  — пользователь ставит лайк фильму.
++ DELETE /films/{id}/like/{userId}  — пользователь удаляет лайк.
 GET /films/popular?count={count} — возвращает список из первых count фильмов по количеству лайков.
 Если значение параметра count не задано, верните первые 10.
  */
