@@ -50,4 +50,9 @@ public class FilmController {
     public ResponseEntity<List<Film>> getPopularFilm(@RequestParam(required = false, defaultValue = "10", name = "count") int count) {
         return filmService.getPopularFilms(count);
     }
-} // GET /films/popular?count={count}
+
+    @GetMapping("/{id}")
+    ResponseEntity<Film> getFilmById(@PathVariable int id) {
+        return filmService.getFilmById(id);
+    }
+}

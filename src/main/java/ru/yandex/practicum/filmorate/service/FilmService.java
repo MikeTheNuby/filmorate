@@ -99,11 +99,15 @@ public class FilmService {
         return new ResponseEntity<>(films.subList(0, count), HttpStatus.OK);
 
     }
-}
 
- /*
-+ PUT /films/{id}/like/{userId}  — пользователь ставит лайк фильму.
-+ DELETE /films/{id}/like/{userId}  — пользователь удаляет лайк.
-GET /films/popular?count={count} — возвращает список из первых count фильмов по количеству лайков.
-Если значение параметра count не задано, верните первые 10.
- */
+    public ResponseEntity<Film> getFilmById(@PathVariable int id) {
+        if (filmStorage.getFilms().containsKey(id)) {
+            Film film = filmStorage.getFilms().get(id);
+            log.info("Film id {} was found", id);
+            return new ResponseEntity<>(film, HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+}
