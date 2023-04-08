@@ -97,7 +97,6 @@ public class FilmService {
         Collections.reverse(films);
         count = Math.min(count, films.size());
         return new ResponseEntity<>(films.subList(0, count), HttpStatus.OK);
-
     }
 
     public ResponseEntity<Film> getFilmById(@PathVariable int id) {

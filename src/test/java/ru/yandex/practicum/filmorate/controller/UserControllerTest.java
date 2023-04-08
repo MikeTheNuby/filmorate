@@ -152,7 +152,8 @@ class UserControllerTest {
     @Test
     void shouldNotGetUserWithUnknownId() {
         assertEquals(0, userController.findAllUsers().size());
-        User user = userController.getUserById(1000).getBody();
+        int failUserId = 1000;
+        User user = userController.getUserById(failUserId).getBody();
 
         assertNull(user);
     }

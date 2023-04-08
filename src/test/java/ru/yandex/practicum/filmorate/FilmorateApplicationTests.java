@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.controller.UserController;
@@ -13,6 +14,7 @@ class FilmorateApplicationTests {
     FilmController filmController;
     UserController userController;
 
+    @Autowired
     public FilmorateApplicationTests(FilmController filmController, UserController userController) {
         this.filmController = filmController;
         this.userController = userController;

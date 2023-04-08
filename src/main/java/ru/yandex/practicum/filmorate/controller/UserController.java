@@ -57,8 +57,6 @@ public class UserController {
         return userService.getCommonFriendsList(id, otherId);
     }
 
-
-
     @GetMapping("/{id}")
     ResponseEntity<User> getUserById(@PathVariable int id) {
         return userService.getUserById(id);

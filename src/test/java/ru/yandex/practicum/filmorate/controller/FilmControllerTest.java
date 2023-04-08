@@ -5,15 +5,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FilmControllerTest {
 
@@ -30,6 +32,16 @@ class FilmControllerTest {
     );
     Film film3 = new Film(3, "Film-3", "Good movie-3",
             LocalDate.of(1998, 5, 18), 264
+    );
+
+    User user1 = new User(1, "User-1", "login-1", "e487837708@fireboxmail.lol",
+            LocalDate.of(1980, 4, 12)
+    );
+    User user2 = new User(2, "User-2", "login-2", "a52aeeb878@fireboxmail.lol",
+            LocalDate.of(1992, 11, 22)
+    );
+    User user3 = new User(3, "User-3", "login-3", "cbad71c5ee@fireboxmail.lol",
+            LocalDate.of(2001, 7, 7)
     );
 
     @BeforeEach
@@ -151,5 +163,109 @@ class FilmControllerTest {
         filmService.update(film3);
         long duration = assertDoesNotThrow(() -> film3.getDuration());
         assertEquals(1, duration);
+    }
+
+    @Test
+    void shouldGetPopularFilms() {
+        filmService.create(film1);
+        filmService.create(film2);
+        filmService.create(film3);
+        userStorage.create(user1);
+        userStorage.create(user2);
+        userStorage.create(user3);
+
+        filmService.addLike(film3.getId(), user1.getId());
+        filmService.addLike(film3.getId(), user2.getId());
+        filmService.addLike(film3.getId(), user3.getId());
+
+        assertEquals(3, film3.getLikes().size());
+
+        filmService.addLike(film1.getId(), user1.getId());
+        filmService.addLike(film1.getId(), user2.getId());
+
+        assertEquals(2, film1.getLikes().size());
+
+        filmService.addLike(film2.getId(), user1.getId());
+
+        assertEquals(1, film2.getLikes().size());
+
+        List<Film> popularFilms = filmService.getPopularFilms(3).getBody();
+
+        assert popularFilms != null;
+        assertEquals(3, popularFilms.size());
+        assertEquals(film3, popularFilms.get(0));
+        assertEquals(film1, popularFilms.get(1));
+        assertEquals(film2, popularFilms.get(2));
+    }
+
+    @Test
+    void shouldGetFilmById() {
+        assertEquals(0, filmService.findAllFilms().size());
+        filmService.create(film1);
+        assertEquals(1, filmService.findAllFilms().size());
+        assertEquals(1, Objects.requireNonNull(filmService.getFilmById(film1.getId()).getBody()).getId());
+        assertEquals("Film-1", Objects.requireNonNull(filmService.getFilmById(film1.getId()).getBody()).getName());
+    }
+
+    @Test
+    void shouldNotGetFilmByFailId() {
+        assertEquals(0, filmService.findAllFilms().size());
+        int failFilmId = 1000;
+        Film nonexistentFilm = filmService.getFilmById(failFilmId).getBody();
+
+        assertNull(nonexistentFilm);
+    }
+
+    @Test
+    void shouldAddLikeToFilm() {
+        filmService.create(film1);
+        userStorage.create(user1);
+        userStorage.create(user2);
+        userStorage.create(user3);
+
+        assertEquals(0, film1.getLikes().size());
+
+        filmService.addLike(film1.getId(), user1.getId());
+        filmService.addLike(film1.getId(), user2.getId());
+        filmService.addLike(film1.getId(), user3.getId());
+
+        assertEquals(3, film1.getLikes().size());
+    }
+
+    @Test
+    void shouldRemoveLikeToFilm() {
+        filmService.create(film1);
+        userStorage.create(user1);
+        userStorage.create(user2);
+        userStorage.create(user3);
+
+        assertEquals(0, film1.getLikes().size());
+
+        filmService.addLike(film1.getId(), user1.getId());
+        filmService.addLike(film1.getId(), user2.getId());
+        filmService.addLike(film1.getId(), user3.getId());
+
+        assertEquals(3, film1.getLikes().size());
+
+        filmService.removeLike(film1.getId(), user1.getId());
+        assertEquals(2, film1.getLikes().size());
+
+        filmService.removeLike(film1.getId(), user2.getId());
+        assertEquals(1, film1.getLikes().size());
+
+        filmService.removeLike(film1.getId(), user3.getId());
+        assertEquals(0, film1.getLikes().size());
+    }
+
+    @Test
+    void shouldNotRemoveLikeToFilmFromUnknownUser() {
+        filmService.create(film1);
+        userStorage.create(user1);
+        filmService.addLike(film1.getId(), user1.getId());
+        int failUserId = 1000;
+
+        assertEquals(1, film1.getLikes().size());
+        filmService.removeLike(film1.getId(), failUserId);
+        assertEquals(1, film1.getLikes().size());
     }
 }
