@@ -11,7 +11,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,12 +22,12 @@ import java.util.List;
 public class FilmService {
 
     private final InMemoryFilmStorage filmStorage;
-    private final UserStorage userStorage;
+    private final InMemoryUserStorage userStorage;
     private final Validator validator;
     private long id = 0;
 
     @Autowired
-    public FilmService(InMemoryFilmStorage filmStorage, UserStorage userStorage, Validator validator) {
+    public FilmService(InMemoryFilmStorage filmStorage, InMemoryUserStorage userStorage, Validator validator) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
         this.validator = validator;

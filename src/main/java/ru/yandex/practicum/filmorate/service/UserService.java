@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.controller.Validator;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.util.HashSet;
 import java.util.List;
@@ -21,12 +21,12 @@ import java.util.stream.Stream;
 @Slf4j
 public class UserService {
 
-    private final UserStorage userStorage;
+    private final InMemoryUserStorage userStorage;
     private final Validator validator;
     private long id = 0;
 
     @Autowired
-    public UserService(UserStorage userStorage, Validator validator) {
+    public UserService(InMemoryUserStorage userStorage, Validator validator) {
         this.userStorage = userStorage;
         this.validator = validator;
     }
@@ -54,6 +54,7 @@ public class UserService {
             log.debug("Key {} not found", user.getId());
             throw new ValidationException("Key not found");
         }
+
         if (userStorage.getUsers().containsKey(user.getId())) {
             userStorage.getUsers().put(user.getId(), user);
             validator.userValidate(user);

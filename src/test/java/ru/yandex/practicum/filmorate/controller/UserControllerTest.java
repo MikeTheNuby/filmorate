@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -22,7 +21,7 @@ class UserControllerTest {
 
     UserController userController;
     UserService userService;
-    UserStorage userStorage;
+    InMemoryUserStorage userStorage;
     Validator validator;
 
     User user1 = new User(1, "User-1", "login-1", "e487837708@fireboxmail.lol",
@@ -185,7 +184,7 @@ class UserControllerTest {
     void shouldNotAddFriendsWithUnknownId() {
         userController.create(user1);
         assertEquals(0, user1.getFriends().size());
-        int nonexistentId = -1;
+        long nonexistentId = -1;
         userController.addFriend(user1.getId(), nonexistentId);
 
         assertEquals(0, user1.getFriends().size());

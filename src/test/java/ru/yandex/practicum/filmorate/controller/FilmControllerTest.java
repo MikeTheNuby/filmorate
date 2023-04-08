@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,7 +20,7 @@ class FilmControllerTest {
 
     FilmService filmService;
     InMemoryFilmStorage filmStorage;
-    UserStorage userStorage;
+    InMemoryUserStorage userStorage;
     Validator validator;
 
     Film film1 = new Film(1, "Film-1", "Good movie-1",
