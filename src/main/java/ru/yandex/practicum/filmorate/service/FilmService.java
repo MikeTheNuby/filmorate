@@ -34,29 +34,28 @@ public class FilmService {
     }
 
     public List<Film> findAllFilms() {
-        log.info("{} films has been saved", filmStorage.getFilms().size());
+        log.debug("{} films has been saved", filmStorage.getFilms().size());
         return new ArrayList<>(filmStorage.getFilms().values());
     }
 
     public Film create(Film film) {
-        log.info("POST req received: {}", film);
+        log.debug("POST req received: {}", film);
         validator.filmValidate(film);
         id++;
         film.setId(id);
         filmStorage.create(film);
-        log.info("Film created");
+        log.debug("Film created");
         return film;
     }
 
     public Film update(Film film) {
-        log.info("PUT req received: {}", film);
 
         if (!filmStorage.getFilms().containsKey(film.getId())) {
             log.error("Film does not exists");
             throw new ValidationException("Film does not exists");
         }
         validator.filmValidate(film);
-        log.info("Film updated");
+        log.debug("Film updated");
         filmStorage.getFilms().put(film.getId(), film);
         return film;
     }
@@ -67,11 +66,11 @@ public class FilmService {
 
         if (film != null && user != null) {
             film.getLikes().add(userId);
-            log.info("User {} add like to {} film", user, film);
+            log.debug("User {} add like to {} film", user, film);
             return new ResponseEntity<>(HttpStatus.OK);
         }
         else {
-            log.info("User {} or film {} not found", id, userId);
+            log.debug("User {} or film {} not found", id, userId);
             return new ResponseEntity<>(film, HttpStatus.NOT_FOUND);
         }
     }
@@ -82,11 +81,11 @@ public class FilmService {
 
         if (film != null && user != null) {
             film.getLikes().remove(userId);
-            log.info("User {} deleted like to {} film", user, film);
+            log.debug("User {} deleted like to {} film", user, film);
             return new ResponseEntity<>(HttpStatus.OK);
         }
         else {
-            log.info("User {} or film {} not found", id, userId);
+            log.debug("User {} or film {} not found", id, userId);
             return new ResponseEntity<>(film, HttpStatus.NOT_FOUND);
         }
     }
@@ -102,7 +101,7 @@ public class FilmService {
     public ResponseEntity<Film> getFilmById(@PathVariable long id) {
         if (filmStorage.getFilms().containsKey(id)) {
             Film film = filmStorage.getFilms().get(id);
-            log.info("Film id {} was found", id);
+            log.debug("Film id {} was found", id);
             return new ResponseEntity<>(film, HttpStatus.OK);
         }
         else {

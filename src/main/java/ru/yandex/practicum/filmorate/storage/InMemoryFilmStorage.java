@@ -16,22 +16,25 @@ public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Long, Film> films = new HashMap<>();
 
     public Map<Long, Film> getFilms() {
+        log.debug("films size: {}", films.size());
         return films;
     }
 
     @Override
     public List<Film> findAllFilms() {
-        log.info("{} films has been saved", films.size());
+        log.debug("{} films has been saved", films.size());
         return new ArrayList<>(films.values());
     }
 
     @Override
     public void create(Film film) {
         films.put(film.getId(), film);
+        log.debug("film {} has been saved", film.getName());
     }
 
     @Override
     public void update(Film film) {
         films.put(film.getId(), film);
+        log.debug("film {} has been updated", film.getName());
     }
 }

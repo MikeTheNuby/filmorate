@@ -37,7 +37,7 @@ public class UserService {
 
     public User create(User user) {
         if (userStorage.getUserMails().contains(user.getEmail())) {
-            log.error("User already exists");
+            log.error("User {} already exists", user.getName());
             throw new ValidationException("User already exists");
         }
 
@@ -45,25 +45,21 @@ public class UserService {
         id++;
         user.setId(id);
         userStorage.create(user);
-        log.info("User {} added", user);
+        log.debug("User {} added", user.getId());
         return user;
     }
 
     public ResponseEntity<User> update(User user) {
-        if (!userStorage.getUsers().containsKey(user.getId())) {
-            log.debug("Key {} not found", user.getId());
-            throw new ValidationException("Key not found");
-        }
-
         if (userStorage.getUsers().containsKey(user.getId())) {
             userStorage.getUsers().put(user.getId(), user);
             validator.userValidate(user);
             validator.removeAbandonedEmails();
-            log.info("User data updated.");
+            log.debug("User {} data updated.", user.getId());
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
         else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            log.debug("Key {} not found", user.getId());
+            throw new ValidationException("Key not found");
         }
     }
 
@@ -74,11 +70,11 @@ public class UserService {
         if (user != null && friend != null) {
             user.getFriends().add(friendId);
             friend.getFriends().add(id);
-            log.info("User {} and user {} are now friends", user, friend);
+            log.debug("User {} and user {} are now friends", user, friend);
             return new ResponseEntity<>(HttpStatus.OK);
         }
         else {
-            log.info("User {} or {} not found", id, friendId);
+            log.debug("User {} or {} not found", id, friendId);
             return new ResponseEntity<>(user, HttpStatus.NOT_FOUND);
         }
     }
@@ -89,13 +85,13 @@ public class UserService {
 
         user.getFriends().remove(friendId);
         friend.getFriends().remove(id);
-
+        log.debug("User {} was removed from friends list.", friendId);
         return user;
     }
 
     public ResponseEntity<Set<User>> getFriendsList(long id) {
         if (userStorage.getUsers().containsKey(id)) {
-            log.info("Friends of user with {} received", id);
+            log.debug("Friends of user with {} received", id);
             Set<User> friends = new HashSet<>();
             for (long idFriends : userStorage.getUsers().get(id).getFriends()) {
                 friends.add(userStorage.getUsers().get(idFriends));
@@ -103,7 +99,7 @@ public class UserService {
             return new ResponseEntity<>(friends, HttpStatus.OK);
         }
         else {
-            log.info("User {} not found", id);
+            log.debug("User {} not found", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -120,11 +116,11 @@ public class UserService {
                     }
                 });
             });
-            log.info("Common friends of users id {} and id {} was received", id, otherId);
+            log.debug("Common friends of users id {} and id {} was received", id, otherId);
             return new ResponseEntity<>(friends, HttpStatus.OK);
         }
         else {
-            log.info("User id {} or id {} not found", id, otherId);
+            log.debug("User id {} or id {} not found", id, otherId);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -132,7 +128,7 @@ public class UserService {
     public ResponseEntity<User> getUserById(@PathVariable long id) {
         if (userStorage.getUsers().containsKey(id)) {
             User user = userStorage.getUsers().get(id);
-            log.info("User id {} was found", id);
+            log.debug("User id {} was found", id);
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
         else {

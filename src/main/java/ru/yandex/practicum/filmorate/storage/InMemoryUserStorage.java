@@ -22,12 +22,13 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public List<String> getUserMails() {
+        log.debug("userMails size: {}", userMails.size());
         return userMails;
     }
 
     @Override
     public List<User> findAllUsers() {
-        log.debug("List size: {}", users.size());
+        log.debug("Users size: {}", users.size());
         return new ArrayList<>(users.values());
     }
 
@@ -35,6 +36,7 @@ public class InMemoryUserStorage implements UserStorage {
     public void create(User user) {
         users.put(user.getId(), user);
         userMails.add(user.getEmail());
+        log.debug("User {} was created", user.getName());
     }
 
     @Override
@@ -43,5 +45,6 @@ public class InMemoryUserStorage implements UserStorage {
         if (!userMails.contains(user.getEmail())) {
             userMails.add(user.getEmail());
         }
+        log.debug("User {} was updated", user.getName());
     }
 }
