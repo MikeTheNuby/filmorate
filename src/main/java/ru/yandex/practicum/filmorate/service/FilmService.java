@@ -24,7 +24,7 @@ public class FilmService {
     private final InMemoryFilmStorage filmStorage;
     private final UserStorage userStorage;
     private final Validator validator;
-    private int id = 0;
+    private long id = 0;
 
     @Autowired
     public FilmService(InMemoryFilmStorage filmStorage, UserStorage userStorage, Validator validator) {
@@ -61,7 +61,7 @@ public class FilmService {
         return film;
     }
 
-    public ResponseEntity<Film> addLike(int id, int userId) {
+    public ResponseEntity<Film> addLike(long id, long userId) {
         Film film = filmStorage.getFilms().get(id);
         User user = userStorage.getUsers().get(userId);
 
@@ -76,7 +76,7 @@ public class FilmService {
         }
     }
 
-    public ResponseEntity<Film> removeLike(int id, int userId) {
+    public ResponseEntity<Film> removeLike(long id, long userId) {
         Film film = filmStorage.getFilms().get(id);
         User user = userStorage.getUsers().get(userId);
 
@@ -99,7 +99,7 @@ public class FilmService {
         return new ResponseEntity<>(films.subList(0, count), HttpStatus.OK);
     }
 
-    public ResponseEntity<Film> getFilmById(@PathVariable int id) {
+    public ResponseEntity<Film> getFilmById(@PathVariable long id) {
         if (filmStorage.getFilms().containsKey(id)) {
             Film film = filmStorage.getFilms().get(id);
             log.info("Film id {} was found", id);

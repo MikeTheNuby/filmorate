@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface UserStorage {
 
-    Map<Integer, User> getUsers();
+    Map<Long, User> getUsers();
 
     List<String> getUserMails();
 

@@ -38,27 +38,27 @@ public class UserController {
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public ResponseEntity<User> addFriend(@PathVariable int id, @PathVariable int friendId) {
+    public ResponseEntity<User> addFriend(@PathVariable long id, @PathVariable long friendId) {
         return userService.addFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public User removeFriend(@PathVariable int id, @PathVariable int friendId) {
+    public User removeFriend(@PathVariable long id, @PathVariable long friendId) {
         return userService.removeFriend(id, friendId);
     }
 
     @RequestMapping("/{id}/friends")
-    public ResponseEntity<Set<User>> getFriendsList(@PathVariable int id) {
+    public ResponseEntity<Set<User>> getFriendsList(@PathVariable long id) {
         return userService.getFriendsList(id);
     }
 
     @RequestMapping("/{id}/friends/common/{otherId}")
-    public ResponseEntity<Set<User>> getCommonFriendsList(@PathVariable int id, @PathVariable int otherId) {
+    public ResponseEntity<Set<User>> getCommonFriendsList(@PathVariable long id, @PathVariable long otherId) {
         return userService.getCommonFriendsList(id, otherId);
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<User> getUserById(@PathVariable int id) {
+    ResponseEntity<User> getUserById(@PathVariable long id) {
         return userService.getUserById(id);
     }
 }

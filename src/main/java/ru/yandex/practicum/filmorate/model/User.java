@@ -12,7 +12,7 @@ import java.util.Set;
 public class User {
 
     @Min(value = 0, message = "Значение id не может быть отрицательным.")
-    private int id;
+    private long id;
     private String name;
     @NotNull(message = "Логин не может быть пустым.")
     private String login;
@@ -21,5 +21,5 @@ public class User {
     @NotNull(message = "Дата рождения не может быть пустой.")
     @Past(message = "Дата рождения не может быть в будущем времени.")
     private LocalDate birthday;
-    private final Set<Integer> friends = new HashSet<>();
+    private final Set<Long> friends = new HashSet<>();
 }

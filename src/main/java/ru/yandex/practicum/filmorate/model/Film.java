@@ -14,7 +14,7 @@ import java.util.Set;
 public class Film implements Comparable<Film> {
 
     @Min(value = 0, message = "Значение id не может быть отрицательным.")
-    private int id;
+    private long id;
     private String name;
     @Size(max = 200, message = "Размер описания превышает допустимый.")
     private String description;
@@ -22,7 +22,7 @@ public class Film implements Comparable<Film> {
     private LocalDate releaseDate;
     @Positive(message = "Длительность фильма не может быть отрицательной.")
     private long duration;
-    private final Set<Integer> likes = new HashSet<>();
+    private final Set<Long> likes = new HashSet<>();
 
     @Override
     public int compareTo(Film o) {

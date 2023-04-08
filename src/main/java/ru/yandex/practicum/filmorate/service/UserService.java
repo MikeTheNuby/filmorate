@@ -23,7 +23,7 @@ public class UserService {
 
     private final UserStorage userStorage;
     private final Validator validator;
-    private int id = 0;
+    private long id = 0;
 
     @Autowired
     public UserService(UserStorage userStorage, Validator validator) {
@@ -66,7 +66,7 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<User> addFriend(int id, int friendId) {
+    public ResponseEntity<User> addFriend(long id, long friendId) {
         User user = userStorage.getUsers().get(id);
         User friend = userStorage.getUsers().get(friendId);
 
@@ -82,7 +82,7 @@ public class UserService {
         }
     }
 
-    public User removeFriend(int id, int friendId) {
+    public User removeFriend(long id, long friendId) {
         User user = userStorage.getUsers().get(id);
         User friend = userStorage.getUsers().get(friendId);
 
@@ -92,11 +92,11 @@ public class UserService {
         return user;
     }
 
-    public ResponseEntity<Set<User>> getFriendsList(int id) {
+    public ResponseEntity<Set<User>> getFriendsList(long id) {
         if (userStorage.getUsers().containsKey(id)) {
             log.info("Friends of user with {} received", id);
             Set<User> friends = new HashSet<>();
-            for (int idFriends : userStorage.getUsers().get(id).getFriends()) {
+            for (long idFriends : userStorage.getUsers().get(id).getFriends()) {
                 friends.add(userStorage.getUsers().get(idFriends));
             }
             return new ResponseEntity<>(friends, HttpStatus.OK);
@@ -107,12 +107,12 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<Set<User>> getCommonFriendsList(int id, int otherId) {
+    public ResponseEntity<Set<User>> getCommonFriendsList(long id, long otherId) {
         if (userStorage.getUsers().containsKey(id) & userStorage.getUsers().containsKey(otherId)) {
             Set<User> friends = new HashSet<>();
-            Stream<Integer> userStream = userStorage.getUsers().get(id).getFriends().stream();
+            Stream<Long> userStream = userStorage.getUsers().get(id).getFriends().stream();
             userStream.forEach((userId) -> {
-                Stream<Integer> otherUserStream = userStorage.getUsers().get(otherId).getFriends().stream();
+                Stream<Long> otherUserStream = userStorage.getUsers().get(otherId).getFriends().stream();
                 otherUserStream.forEach((otherUserId) -> {
                     if (Objects.equals(userId, otherUserId)) {
                         friends.add(userStorage.getUsers().get(userId));
@@ -128,7 +128,7 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<User> getUserById(@PathVariable int id) {
+    public ResponseEntity<User> getUserById(@PathVariable long id) {
         if (userStorage.getUsers().containsKey(id)) {
             User user = userStorage.getUsers().get(id);
             log.info("User id {} was found", id);

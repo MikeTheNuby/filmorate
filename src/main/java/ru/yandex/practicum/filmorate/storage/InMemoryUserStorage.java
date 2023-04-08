@@ -13,11 +13,11 @@ import java.util.Map;
 @Slf4j
 public class InMemoryUserStorage implements UserStorage {
 
-    private final Map<Integer, User> users = new HashMap<>();
+    private final Map<Long, User> users = new HashMap<>();
     private final List<String> userMails = new ArrayList<>();
 
     @Override
-    public Map<Integer, User> getUsers() {
+    public Map<Long, User> getUsers() {
         return users;
     }
 
