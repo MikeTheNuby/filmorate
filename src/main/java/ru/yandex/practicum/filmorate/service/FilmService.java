@@ -34,28 +34,27 @@ public class FilmService {
     }
 
     public List<Film> findAllFilms() {
-        log.debug("{} films has been saved", filmStorage.getFilms().size());
+        log.debug("{} films was saved", filmStorage.getFilms().size());
         return new ArrayList<>(filmStorage.getFilms().values());
     }
 
     public Film create(Film film) {
-        log.debug("POST req received: {}", film);
         validator.filmValidate(film);
         id++;
         film.setId(id);
         filmStorage.create(film);
-        log.debug("Film created");
+        log.debug("Film {} created", film.getName());
         return film;
     }
 
     public Film update(Film film) {
 
         if (!filmStorage.getFilms().containsKey(film.getId())) {
-            log.error("Film does not exists");
+            log.error("Film {} does not exists", film.getName());
             throw new ValidationException("Film does not exists");
         }
         validator.filmValidate(film);
-        log.debug("Film updated");
+        log.debug("Film {} updated", film.getName());
         filmStorage.getFilms().put(film.getId(), film);
         return film;
     }
@@ -95,6 +94,7 @@ public class FilmService {
         films.sort(Film::compareTo);
         Collections.reverse(films);
         count = Math.min(count, films.size());
+        log.debug("List of popular films created");
         return new ResponseEntity<>(films.subList(0, count), HttpStatus.OK);
     }
 

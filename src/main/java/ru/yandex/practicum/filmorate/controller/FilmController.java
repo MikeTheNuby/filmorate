@@ -15,7 +15,7 @@ import java.util.List;
 @Slf4j
 public class FilmController {
 
-    FilmService filmService;
+    private final FilmService filmService;
 
     public FilmController(FilmService filmService) {
         this.filmService = filmService;
