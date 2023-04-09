@@ -67,8 +67,7 @@ public class FilmService {
             film.getLikes().add(userId);
             log.debug("User {} add like to {} film", user, film);
             return new ResponseEntity<>(HttpStatus.OK);
-        }
-        else {
+        } else {
             log.debug("User {} or film {} not found", id, userId);
             return new ResponseEntity<>(film, HttpStatus.NOT_FOUND);
         }
@@ -82,8 +81,7 @@ public class FilmService {
             film.getLikes().remove(userId);
             log.debug("User {} deleted like to {} film", user, film);
             return new ResponseEntity<>(HttpStatus.OK);
-        }
-        else {
+        } else {
             log.debug("User {} or film {} not found", id, userId);
             return new ResponseEntity<>(film, HttpStatus.NOT_FOUND);
         }
@@ -103,8 +101,7 @@ public class FilmService {
             Film film = filmStorage.getFilms().get(id);
             log.debug("Film id {} was found", id);
             return new ResponseEntity<>(film, HttpStatus.OK);
-        }
-        else {
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

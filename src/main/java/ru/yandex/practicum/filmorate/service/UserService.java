@@ -56,8 +56,7 @@ public class UserService {
             validator.removeAbandonedEmails();
             log.debug("User {} data updated.", user.getId());
             return new ResponseEntity<>(user, HttpStatus.OK);
-        }
-        else {
+        } else {
             log.debug("Key {} not found", user.getId());
             throw new ValidationException("Key not found");
         }
@@ -72,8 +71,7 @@ public class UserService {
             friend.getFriends().add(id);
             log.debug("User {} and user {} are now friends", user, friend);
             return new ResponseEntity<>(HttpStatus.OK);
-        }
-        else {
+        } else {
             log.debug("User {} or {} not found", id, friendId);
             return new ResponseEntity<>(user, HttpStatus.NOT_FOUND);
         }
@@ -97,8 +95,7 @@ public class UserService {
                 friends.add(userStorage.getUsers().get(idFriends));
             }
             return new ResponseEntity<>(friends, HttpStatus.OK);
-        }
-        else {
+        } else {
             log.debug("User {} not found", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -118,8 +115,7 @@ public class UserService {
             });
             log.debug("Common friends of users id {} and id {} was received", id, otherId);
             return new ResponseEntity<>(friends, HttpStatus.OK);
-        }
-        else {
+        } else {
             log.debug("User id {} or id {} not found", id, otherId);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -130,8 +126,7 @@ public class UserService {
             User user = userStorage.getUsers().get(id);
             log.debug("User id {} was found", id);
             return new ResponseEntity<>(user, HttpStatus.OK);
-        }
-        else {
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
