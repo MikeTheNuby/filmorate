@@ -14,16 +14,9 @@ import java.util.Map;
 public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Long, User> users = new HashMap<>();
-    private final List<String> userMails = new ArrayList<>();
 
     public Map<Long, User> getUsers() {
         return users;
-    }
-
-    @Override
-    public List<String> getUserMails() {
-        log.debug("userMails size: {}", userMails.size());
-        return userMails;
     }
 
     @Override
@@ -35,16 +28,12 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public void create(User user) {
         users.put(user.getId(), user);
-        userMails.add(user.getEmail());
         log.debug("User {} was created", user.getName());
     }
 
     @Override
     public void update(User user) {
         users.put(user.getId(), user);
-        if (!userMails.contains(user.getEmail())) {
-            userMails.add(user.getEmail());
-        }
         log.debug("User {} was updated", user.getName());
     }
 }

@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface UserStorage {
 
-    List<String> getUserMails();
-
     List<User> findAllUsers();
 
     void create(@NotNull @Valid @RequestBody User user);

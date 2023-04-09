@@ -20,7 +20,7 @@ public class User {
     private String login;
     @Email(message = "Формат @mail не соответствует требованиям.")
     private String email;
-    @NotBlank(message = "Дата рождения не может быть пустой.")
+    @NotNull(message = "Дата рождения не может быть пустой.")
     @Past(message = "Дата рождения не может быть в будущем времени.")
     private LocalDate birthday;
     private final Set<Long> friends = new HashSet<>();

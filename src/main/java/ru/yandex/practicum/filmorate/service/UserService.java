@@ -36,7 +36,7 @@ public class UserService {
     }
 
     public User create(User user) {
-        if (userStorage.getUserMails().contains(user.getEmail())) {
+        if (userStorage.getUsers().containsKey(user.getId())) {
             log.error("User {} already exists", user.getName());
             throw new ValidationException("User already exists");
         }
@@ -53,7 +53,6 @@ public class UserService {
         if (userStorage.getUsers().containsKey(user.getId())) {
             userStorage.getUsers().put(user.getId(), user);
             validator.userValidate(user);
-            validator.removeAbandonedEmails();
             log.debug("User {} data updated.", user.getId());
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {

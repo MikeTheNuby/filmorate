@@ -5,18 +5,14 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 @Slf4j
 public class Validator {
 
-    private final InMemoryUserStorage userStorage = new InMemoryUserStorage();
     private static final LocalDate EARLIEST_DATE = LocalDate.of(1895, 12, 28);
 
     public void userValidate(User user) {
@@ -62,16 +58,5 @@ public class Validator {
             log.error("Film release duration is negative value. {}", film.getDuration());
             throw new ValidationException("Film release duration is negative value.");
         }
-    }
-
-    public void removeAbandonedEmails() {
-        List<String> rawUserMails = userStorage.getUserMails();
-        List<String> actualUserMails = new ArrayList<>();
-
-        for (User i : userStorage.getUsers().values()) {
-            actualUserMails.add(i.getEmail());
-        }
-
-        rawUserMails.removeIf(i -> !actualUserMails.contains(i));
     }
 }
