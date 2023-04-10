@@ -15,7 +15,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FilmControllerTest {
 
@@ -127,7 +128,7 @@ class FilmControllerTest {
     @Test
     void shouldNotFilmUpdateWithFailName() {
         film2.setName("");
-        Assertions.assertThrows(ValidationException.class, () -> filmService.update(film2));
+        Assertions.assertThrows(NotFoundException.class, () -> filmService.update(film2));
     }
 
     @Test

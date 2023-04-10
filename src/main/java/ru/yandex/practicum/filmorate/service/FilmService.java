@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.controller.Validator;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
@@ -52,7 +51,7 @@ public class FilmService {
 
         if (!filmStorage.getFilms().containsKey(film.getId())) {
             log.error("Film {} does not exists", film.getName());
-            throw new ValidationException("Film does not exists");
+            throw new NotFoundException("Film does not exists");
         }
         validator.filmValidate(film);
         log.debug("Film {} updated", film.getName());

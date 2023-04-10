@@ -58,7 +58,7 @@ public class UserService {
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
             log.debug("Key {} not found", user.getId());
-            throw new ValidationException("Key not found");
+            throw new NotFoundException("User not found");
         }
     }
 

@@ -113,25 +113,25 @@ class UserControllerTest {
     void shouldNotUserUpdateUnknownUser() {
         user2.setName("");
         user2.setLogin("");
-        Assertions.assertThrows(ValidationException.class, () -> userController.update(user2));
+        Assertions.assertThrows(NotFoundException.class, () -> userController.update(user2));
     }
 
     @Test
     void shouldNotUserUpdateWithFailLogin() {
         user2.setLogin("");
-        Assertions.assertThrows(ValidationException.class, () -> userController.update(user2));
+        Assertions.assertThrows(NotFoundException.class, () -> userController.update(user2));
     }
 
     @Test
     void shouldNotUserUpdateWithFailEmail() {
         user2.setEmail("");
-        Assertions.assertThrows(ValidationException.class, () -> userController.update(user2));
+        Assertions.assertThrows(NotFoundException.class, () -> userController.update(user2));
     }
 
     @Test
     void shouldNotUserUpdateWithFailBirthDay() {
         user2.setBirthday(LocalDate.of(2980, 4, 12));
-        Assertions.assertThrows(ValidationException.class, () -> userController.update(user2));
+        Assertions.assertThrows(NotFoundException.class, () -> userController.update(user2));
     }
 
     @Test
