@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.controller.Validator;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
@@ -69,7 +70,7 @@ public class FilmService {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             log.debug("User {} or film {} not found", id, userId);
-            return new ResponseEntity<>(film, HttpStatus.NOT_FOUND);
+            throw new NotFoundException("Film not found");
         }
     }
 
@@ -83,7 +84,7 @@ public class FilmService {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             log.debug("User {} or film {} not found", id, userId);
-            return new ResponseEntity<>(film, HttpStatus.NOT_FOUND);
+            throw new NotFoundException("Film not found");
         }
     }
 
@@ -102,7 +103,7 @@ public class FilmService {
             log.debug("Film id {} was found", id);
             return new ResponseEntity<>(film, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new NotFoundException("Film not found");
         }
     }
 }

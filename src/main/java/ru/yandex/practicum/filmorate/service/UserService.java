@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.controller.Validator;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
@@ -72,7 +73,7 @@ public class UserService {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             log.debug("User {} or {} not found", id, friendId);
-            return new ResponseEntity<>(user, HttpStatus.NOT_FOUND);
+            throw new NotFoundException("User not found");
         }
     }
 
@@ -96,7 +97,7 @@ public class UserService {
             return new ResponseEntity<>(friends, HttpStatus.OK);
         } else {
             log.debug("User {} not found", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new NotFoundException("User not found");
         }
     }
 
@@ -116,7 +117,7 @@ public class UserService {
             return new ResponseEntity<>(friends, HttpStatus.OK);
         } else {
             log.debug("User id {} or id {} not found", id, otherId);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new NotFoundException("User not found");
         }
     }
 
@@ -126,7 +127,7 @@ public class UserService {
             log.debug("User id {} was found", id);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new NotFoundException("User not found");
         }
     }
 }

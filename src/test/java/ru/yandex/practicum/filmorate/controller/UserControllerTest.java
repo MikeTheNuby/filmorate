@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
@@ -152,9 +153,7 @@ class UserControllerTest {
     void shouldNotGetUserWithUnknownId() {
         assertEquals(0, userController.findAllUsers().size());
         int failUserId = 1000;
-        User user = userController.getUserById(failUserId).getBody();
-
-        assertNull(user);
+        Assertions.assertThrows(NotFoundException.class, () -> userController.getUserById(failUserId));
     }
 
     @Test
@@ -185,8 +184,8 @@ class UserControllerTest {
         userController.create(user1);
         assertEquals(0, user1.getFriends().size());
         long nonexistentId = -1;
-        userController.addFriend(user1.getId(), nonexistentId);
 
+        Assertions.assertThrows(NotFoundException.class, () -> userController.addFriend(user1.getId(), nonexistentId));
         assertEquals(0, user1.getFriends().size());
         assertFalse(user1.getFriends().contains(nonexistentId));
     }

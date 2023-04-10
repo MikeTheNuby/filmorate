@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
@@ -210,9 +211,7 @@ class FilmControllerTest {
     void shouldNotGetFilmByFailId() {
         assertEquals(0, filmService.findAllFilms().size());
         int failFilmId = 1000;
-        Film nonexistentFilm = filmService.getFilmById(failFilmId).getBody();
-
-        assertNull(nonexistentFilm);
+        Assertions.assertThrows(NotFoundException.class, () -> filmService.getFilmById(failFilmId));
     }
 
     @Test
@@ -264,7 +263,7 @@ class FilmControllerTest {
         int failUserId = 1000;
 
         assertEquals(1, film1.getLikes().size());
-        filmService.removeLike(film1.getId(), failUserId);
+        Assertions.assertThrows(NotFoundException.class, () -> filmService.removeLike(film1.getId(), failUserId));
         assertEquals(1, film1.getLikes().size());
     }
 }
