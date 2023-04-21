@@ -7,7 +7,8 @@
 ![db_map](src/main/resources/db_map.png)
 
 
-Эта база данных содержит информацию о фильмах, жанрах, пользователях, дружбе и лайках. Схема состоит из шести таблиц: `film`, `genre_list`, `film_genre`, `service_user`, `friendship` и `like`.
+Эта база данных содержит информацию о фильмах, жанрах, пользователях, дружбе и лайках. 
+Схема состоит из шести таблиц: `film`, `genre_list`, `film_genre`, `service_user`, `friendship` и `like`.
 
 Таблица `film` содержит информацию о фильмах, включая их `id`, `name`, `description`, `releaseDate`, `duration` и рейтинг `mpa`.
 
@@ -23,14 +24,14 @@
 
 ## Примеры запросов
 
--- Вставить новый фильм
+-- Добавить новый фильм
 ```sql
 INSERT INTO film (id, name, description, releaseDate, duration, mpa)
 VALUES (1, 'The Shawshank Redemption', 'Two imprisoned men bond over a number of years...', 
         '1994-09-22', 142, 'R');
 ```
 
--- Вставить новый жанр
+-- Добавить новый жанр
 ```sql
 INSERT INTO genre_list (name)
 VALUES ('Drama');
@@ -42,7 +43,7 @@ INSERT INTO film_genre (film_id, genre_id)
 VALUES (1, 1);
 ```
 
--- Вставить нового пользователя
+-- Добавить нового пользователя
 ```sql
 INSERT INTO service_user (id, email, login, name, birthday)
 VALUES (1, 'andy@example.com', 'andy', 'Andy Dufresne', '1959-06-06');
