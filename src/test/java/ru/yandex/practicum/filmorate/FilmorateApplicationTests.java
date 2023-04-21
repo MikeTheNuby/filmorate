@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.controller.UserController;
@@ -11,13 +11,13 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @SpringBootTest
 class FilmorateApplicationTests {
 
-    private UserController userController;
-    private FilmController filmController;
+    FilmController filmController;
+    UserController userController;
 
-    @BeforeEach
-    public void start() {
-        userController = new UserController();
-        filmController = new FilmController();
+    @Autowired
+    public FilmorateApplicationTests(FilmController filmController, UserController userController) {
+        this.filmController = filmController;
+        this.userController = userController;
     }
 
     @Test
