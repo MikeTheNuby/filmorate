@@ -25,8 +25,9 @@
 
 -- Вставить новый фильм
 ```sql
-INSERT INTO film (name, description, releaseDate, duration, mpa)
-VALUES ('The Shawshank Redemption', 'Two imprisoned men bond over a number of years...', '1994-09-22', 142, 'R');
+INSERT INTO film (id, name, description, releaseDate, duration, mpa)
+VALUES (1, 'The Shawshank Redemption', 'Two imprisoned men bond over a number of years...', 
+        '1994-09-22', 142, 'R');
 ```
 
 -- Вставить новый жанр
@@ -43,8 +44,8 @@ VALUES (1, 1);
 
 -- Вставить нового пользователя
 ```sql
-INSERT INTO service_user (email, login, name, birthday)
-VALUES ('andy@example.com', 'andy', 'Andy Dufresne', '1959-06-06');
+INSERT INTO service_user (id, email, login, name, birthday)
+VALUES (1, 'andy@example.com', 'andy', 'Andy Dufresne', '1959-06-06');
 ```
 
 -- Добавить запрос на дружбу от одного пользователя к другому
