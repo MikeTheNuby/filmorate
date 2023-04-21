@@ -3,9 +3,9 @@
 `[Ссылка на исходный материал](https://dbdiagram.io/d/644260896b31947051f90e2b)`
 
 
-```
+
 ![db_map](src/main/resources/db_map.png)
-```
+
 
 Эта база данных содержит информацию о фильмах, жанрах, пользователях, дружбе и лайках. Схема состоит из шести таблиц: `film`, `genre_list`, `film_genre`, `service_user`, `friendship` и `like`.
 
