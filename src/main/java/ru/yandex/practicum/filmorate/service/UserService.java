@@ -23,13 +23,11 @@ import java.util.stream.Stream;
 public class UserService {
 
     private final InMemoryUserStorage userStorage;
-    private final Validator validator;
     private long id = 0;
 
     @Autowired
-    public UserService(InMemoryUserStorage userStorage, Validator validator) {
+    public UserService(InMemoryUserStorage userStorage) {
         this.userStorage = userStorage;
-        this.validator = validator;
     }
 
     public List<User> findAllUsers() {
@@ -42,7 +40,7 @@ public class UserService {
             throw new ValidationException("User already exists");
         }
 
-        validator.userValidate(user);
+        Validator.userValidate(user);
         id++;
         user.setId(id);
         userStorage.create(user);
@@ -53,7 +51,7 @@ public class UserService {
     public ResponseEntity<User> update(User user) {
         if (userStorage.getUsers().containsKey(user.getId())) {
             userStorage.getUsers().put(user.getId(), user);
-            validator.userValidate(user);
+            Validator.userValidate(user);
             log.debug("User {} data updated.", user.getId());
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {

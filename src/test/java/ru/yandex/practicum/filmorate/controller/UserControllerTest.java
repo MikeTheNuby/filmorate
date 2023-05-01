@@ -23,7 +23,6 @@ class UserControllerTest {
     UserController userController;
     UserService userService;
     InMemoryUserStorage userStorage;
-    Validator validator;
 
     User user1 = new User(1, "User-1", "login-1", "e487837708@fireboxmail.lol",
             LocalDate.of(1980, 4, 12)
@@ -38,8 +37,7 @@ class UserControllerTest {
     @BeforeEach
     void setUp() {
         userStorage = new InMemoryUserStorage();
-        validator = new Validator();
-        userService = new UserService(userStorage, validator);
+        userService = new UserService(userStorage);
         userController = new UserController(userService);
     }
 
