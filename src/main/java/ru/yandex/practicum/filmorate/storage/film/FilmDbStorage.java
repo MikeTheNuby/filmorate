@@ -21,6 +21,7 @@ import java.util.List;
 @Qualifier("FilmDbStorage")
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
+
     private final String UPDATE_FILM_SQL =
             "UPDATE PUBLIC.FILM " +
                     "SET NAME=?, DESCRIPTION=?, RELEASE_DATE=?, DURATION=? , RATING_ID=? " +
