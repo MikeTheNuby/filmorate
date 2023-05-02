@@ -17,9 +17,11 @@ import java.util.List;
 @Qualifier("UserDbStorage")
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final String UPDATE_USER_SQL =
-            "UPDATE PUBLIC.USERS SET EMAIL=?, LOGIN=?, NAME=?, birthday=? WHERE USER_ID=?";
-    private final String SELECT_USER_BY_ID_SQL = "SELECT * FROM PUBLIC.USERS WHERE USER_ID=?";
+    
+    private final String UPDATE_USER =
+            "UPDATE PUBLIC.USERS SET EMAIL=?, LOGIN=?, NAME=?, BIRTHDAY=? WHERE USER_ID=?";
+    
+    private final String SELECT_USER_BY_ID = "SELECT * FROM PUBLIC.USERS WHERE USER_ID=?";
 
     public UserDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -37,7 +39,7 @@ public class UserDbStorage implements UserStorage {
     public User update(User user) {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection
-                    .prepareStatement(UPDATE_USER_SQL);
+                    .prepareStatement(UPDATE_USER);
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getLogin());
             ps.setString(3, user.getName());
@@ -49,7 +51,7 @@ public class UserDbStorage implements UserStorage {
     }
     @Override
     public User getUser(Long id) {
-        return jdbcTemplate.queryForObject(SELECT_USER_BY_ID_SQL, this::mapRowToUser, id);
+        return jdbcTemplate.queryForObject(SELECT_USER_BY_ID, this::mapRowToUser, id);
     }
 
     private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
@@ -64,19 +66,19 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> findAll() {
-        String SELECT_ALL_USER_SQL = "SELECT * FROM PUBLIC.USERS";
-        return jdbcTemplate.query(SELECT_ALL_USER_SQL, this::mapRowToUser);
+        String SELECT_ALL_USER = "SELECT * FROM PUBLIC.USERS";
+        return jdbcTemplate.query(SELECT_ALL_USER, this::mapRowToUser);
     }
 
     @Override
     public Boolean contains(User user) {
-        var sqlRowSet = jdbcTemplate.queryForRowSet(SELECT_USER_BY_ID_SQL, user.getId());
+        var sqlRowSet = jdbcTemplate.queryForRowSet(SELECT_USER_BY_ID, user.getId());
         return sqlRowSet.isBeforeFirst();
     }
 
     @Override
     public Boolean contains(Long id) {
-        var sqlRowSet = jdbcTemplate.queryForRowSet(SELECT_USER_BY_ID_SQL, id);
+        var sqlRowSet = jdbcTemplate.queryForRowSet(SELECT_USER_BY_ID, id);
         return sqlRowSet.isBeforeFirst();
     }
 }

@@ -22,11 +22,12 @@ import java.util.List;
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
 
-    private final String UPDATE_FILM_SQL =
+    private final String UPDATE_FILM =
             "UPDATE PUBLIC.FILM " +
                     "SET NAME=?, DESCRIPTION=?, RELEASE_DATE=?, DURATION=? , RATING_ID=? " +
                     "WHERE FILM_ID=?";
-    private final String SELECT_FILM_BY_ID_SQL =
+    
+    private final String SELECT_FILM_BY_ID =
             "SELECT F.*, R.NAME AS RATING_NAME " +
                     "FROM PUBLIC.FILM F LEFT JOIN PUBLIC.RATING R ON F.RATING_ID=R.RATING_ID " +
                     "WHERE F.FILM_ID=?";
@@ -48,7 +49,7 @@ public class FilmDbStorage implements FilmStorage {
     public Film update(Film film) {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection
-                    .prepareStatement(UPDATE_FILM_SQL);
+                    .prepareStatement(UPDATE_FILM);
             ps.setString(1, film.getName());
             ps.setString(2, film.getDescription());
             ps.setDate(3, Date.valueOf(film.getReleaseDate()));
@@ -62,23 +63,23 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> findAll() {
-        String SELECT_ALL_FILM_SQL = "SELECT F.*, r.NAME AS RATING_NAME " +
+        String SELECT_ALL_FILM = "SELECT F.*, r.NAME AS RATING_NAME " +
                 "FROM PUBLIC.FILM f LEFT JOIN PUBLIC.RATING r ON F.RATING_ID=R.RATING_ID";
-        return jdbcTemplate.query(SELECT_ALL_FILM_SQL, this::mapRowToFilm);
+        return jdbcTemplate.query(SELECT_ALL_FILM, this::mapRowToFilm);
     }
 
     public List<Film> findTop10Films(int count) {
-        String SELECT_TOP10_FILMS = "SELECT F.*, R.NAME AS RATING_NAME, COUNT(FL.USER_ID) LIKES " +
+        String SELECT_TOP_FILMS = "SELECT F.*, R.NAME AS RATING_NAME, COUNT(FL.USER_ID) LIKES " +
                 "FROM PUBLIC.FILM F LEFT JOIN PUBLIC.FILM_LIKE FL ON F.FILM_ID = FL.FILM_ID " +
                 "LEFT JOIN PUBLIC.RATING R ON F.RATING_ID=R.RATING_ID " +
                 "GROUP BY F.NAME ORDER BY LIKES DESC LIMIT ?";
-        return jdbcTemplate.query(SELECT_TOP10_FILMS, this::mapRowToFilm, count);
+        return jdbcTemplate.query(SELECT_TOP_FILMS, this::mapRowToFilm, count);
     }
 
     @Override
     public Boolean contains(Film film) {
         try {
-            jdbcTemplate.queryForObject(SELECT_FILM_BY_ID_SQL, this::mapRowToFilm, film.getId());
+            jdbcTemplate.queryForObject(SELECT_FILM_BY_ID, this::mapRowToFilm, film.getId());
             return true;
         } catch (
                 EmptyResultDataAccessException e) {
@@ -89,7 +90,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Boolean contains(Long id) {
         try {
-            jdbcTemplate.queryForObject(SELECT_FILM_BY_ID_SQL, this::mapRowToFilm, id);
+            jdbcTemplate.queryForObject(SELECT_FILM_BY_ID, this::mapRowToFilm, id);
             return true;
         } catch (
                 EmptyResultDataAccessException e) {
@@ -99,7 +100,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getFilm(Long id) {
-        return jdbcTemplate.queryForObject(SELECT_FILM_BY_ID_SQL, this::mapRowToFilm, id);
+        return jdbcTemplate.queryForObject(SELECT_FILM_BY_ID, this::mapRowToFilm, id);
     }
 
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
