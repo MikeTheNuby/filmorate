@@ -2,130 +2,107 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import ru.yandex.practicum.filmorate.controller.Validator;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exceptions.ResourceNotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.friends.FriendsStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Stream;
 
-@Service
+import static ru.yandex.practicum.filmorate.service.Validator.validateUser;
+
 @Slf4j
+@Service
 public class UserService {
 
-    private final InMemoryUserStorage userStorage;
-    private long id = 0;
+    private final UserStorage userStorage;
+    private final FriendsStorage friendsStorage;
 
     @Autowired
-    public UserService(InMemoryUserStorage userStorage) {
+    public UserService(@Qualifier("UserDbStorage") UserStorage userStorage, FriendsStorage friendsStorage) {
         this.userStorage = userStorage;
-    }
-
-    public List<User> findAllUsers() {
-        return userStorage.findAllUsers();
+        this.friendsStorage = friendsStorage;
     }
 
     public User create(User user) {
-        if (userStorage.getUsers().containsKey(user.getId())) {
-            log.error("User {} already exists", user.getName());
-            throw new ValidationException("User already exists");
+        try {
+            validateUser(user);
+        } catch (ValidationException exception) {
+            log.warn(exception.getMessage());
+            throw exception;
         }
-
-        Validator.userValidate(user);
-        id++;
-        user.setId(id);
-        userStorage.create(user);
-        log.debug("User {} added", user.getId());
-        return user;
-    }
-
-    public ResponseEntity<User> update(User user) {
-        if (userStorage.getUsers().containsKey(user.getId())) {
-            userStorage.getUsers().put(user.getId(), user);
-            Validator.userValidate(user);
-            log.debug("User {} data updated.", user.getId());
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        } else {
-            log.debug("Key {} not found", user.getId());
-            throw new NotFoundException("User not found");
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
         }
+        User createdUser = userStorage.create(user);
+        log.info("User created" + createdUser);
+        return createdUser;
     }
 
-    public ResponseEntity<User> addFriend(long id, long friendId) {
-        User user = userStorage.getUsers().get(id);
-        User friend = userStorage.getUsers().get(friendId);
-
-        if (user != null && friend != null) {
-            user.getFriends().add(friendId);
-            friend.getFriends().add(id);
-            log.debug("User {} and user {} are now friends", user, friend);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            log.debug("User {} or {} not found", id, friendId);
-            throw new NotFoundException("User not found");
+    public User update(User user) {
+        try {
+            validateUser(user);
+        } catch (ValidationException exception) {
+            log.warn(exception.getMessage());
+            throw exception;
         }
-    }
-
-    public User removeFriend(long id, long friendId) {
-        User user = userStorage.getUsers().get(id);
-        User friend = userStorage.getUsers().get(friendId);
-
-        user.getFriends().remove(friendId);
-        friend.getFriends().remove(id);
-        log.debug("User {} was removed from friends list.", friendId);
-        return user;
-    }
-
-    public ResponseEntity<Set<User>> getFriendsList(long id) {
-        if (userStorage.getUsers().containsKey(id)) {
-            log.debug("Friends of user with {} received", id);
-            Set<User> friends = new HashSet<>();
-            for (long idFriends : userStorage.getUsers().get(id).getFriends()) {
-                friends.add(userStorage.getUsers().get(idFriends));
+        User updatedUser;
+        if (userStorage.contains(user)) {
+            if (user.getName().isBlank()) {
+                user.setName(user.getLogin());
             }
-            return new ResponseEntity<>(friends, HttpStatus.OK);
+            updatedUser = userStorage.update(user);
+            log.info("User updated" + updatedUser);
         } else {
-            log.debug("User {} not found", id);
-            throw new NotFoundException("User not found");
+            log.warn("User not found" + user);
+            throw new ResourceNotFoundException("User not found");
+        }
+        return updatedUser;
+    }
+
+    public List<User> findAll() {
+        return userStorage.findAll();
+    }
+
+    public User getUser(Long id) {
+        if (userStorage.contains(id)) {
+            return userStorage.getUser(id);
+        } else {
+            log.warn("User with id not found" + id);
+            throw new ResourceNotFoundException("User not found");
         }
     }
 
-    public ResponseEntity<Set<User>> getCommonFriendsList(long id, long otherId) {
-        if (userStorage.getUsers().containsKey(id) & userStorage.getUsers().containsKey(otherId)) {
-            Set<User> friends = new HashSet<>();
-            Stream<Long> userStream = userStorage.getUsers().get(id).getFriends().stream();
-            userStream.forEach((userId) -> {
-                Stream<Long> otherUserStream = userStorage.getUsers().get(otherId).getFriends().stream();
-                otherUserStream.forEach((otherUserId) -> {
-                    if (Objects.equals(userId, otherUserId)) {
-                        friends.add(userStorage.getUsers().get(userId));
-                    }
-                });
-            });
-            log.debug("Common friends of users id {} and id {} was received", id, otherId);
-            return new ResponseEntity<>(friends, HttpStatus.OK);
-        } else {
-            log.debug("User id {} or id {} not found", id, otherId);
-            throw new NotFoundException("User not found");
+    public void addFriend(Long id, Long idFriend) {
+        if (!(userStorage.contains(id) && userStorage.contains(idFriend))) {
+            log.warn("User with id not found" + id);
+            throw new ResourceNotFoundException("User not found");
         }
+        friendsStorage.addFriend(id, idFriend);
+        log.info(String.format("Added friendship to users with id=%d and id=%d", id, idFriend));
     }
 
-    public ResponseEntity<User> getUserById(@PathVariable long id) {
-        if (userStorage.getUsers().containsKey(id)) {
-            User user = userStorage.getUsers().get(id);
-            log.debug("User id {} was found", id);
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        } else {
-            throw new NotFoundException("User not found");
+    public void removeFriend(Long id, Long idFriend) {
+        if (!(userStorage.contains(id) && userStorage.contains(idFriend))) {
+            log.warn("User with id not found" + id);
+            throw new ResourceNotFoundException("User not found");
         }
+        friendsStorage.removeFriend(id, idFriend);
+        log.info(String.format("Removed friendship to users with id=%d and id=%d", id, idFriend));
+    }
+
+    public List<User> getCommonFriends(Long id, Long idFriend) {
+        List<User> commonFriends = friendsStorage.getCommonFriends(id, idFriend);
+        log.info(String.format("Common friends for users with id=%d and id=%d is %s", id, idFriend, commonFriends));
+        return commonFriends;
+    }
+
+    public List<User> getAllFriends(Long id) {
+        List<User> allFriends = friendsStorage.getAllFriends(id);
+        log.info(String.format("All friends for user with id=%d is %s", id, allFriends));
+        return allFriends;
     }
 }
