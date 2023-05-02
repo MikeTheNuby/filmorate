@@ -1,53 +1,137 @@
-CREATE TABLE IF NOT EXISTS films (
-    film_id INTEGER PRIMARY KEY,
-    name VARCHAR,
-    description VARCHAR(200),
-    releaseDate DATE,
-    duration INTEGER,
-    rating_id INTEGER
+drop table IF EXISTS FILM;
+
+drop table IF EXISTS FILM_GENRE;
+
+drop table IF EXISTS FILM_LIKE;
+
+drop table IF EXISTS FRIENDSHIP;
+
+drop table IF EXISTS GENRE;
+
+drop table IF EXISTS RATING;
+
+drop table IF EXISTS USERS;
+
+CREATE TABLE IF NOT EXISTS public.film
+(
+    film_id      integer AUTO_INCREMENT NOT NULL,
+    name         character varying      NOT NULL,
+    description  character varying,
+    release_date date,
+    duration     integer,
+    rating_id    integer
 );
 
-CREATE TABLE IF NOT EXISTS rating_list (
-    rating_id INTEGER PRIMARY KEY,
-    rating_title VARCHAR
+
+CREATE TABLE IF NOT EXISTS public.film_genre
+(
+    film_genre_id integer AUTO_INCREMENT NOT NULL,
+    film_id       integer                NOT NULL,
+    genre_id      integer                NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS genre_list (
-    genre_id INTEGER PRIMARY KEY,
-    genre_title VARCHAR
+
+
+CREATE TABLE IF NOT EXISTS public.film_like
+(
+    like_id integer AUTO_INCREMENT NOT NULL,
+    film_id integer                NOT NULL,
+    user_id integer                NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS film_genre (
-    film_id INTEGER,
-    genre_id INTEGER,
-    PRIMARY KEY (film_id, genre_id)
+
+CREATE TABLE IF NOT EXISTS public.friendship
+(
+    friendship_id integer AUTO_INCREMENT NOT NULL,
+    user_id       integer                NOT NULL,
+    friend_id     integer                NOT NULL,
+    is_confirmed  boolean
 );
 
-CREATE TABLE IF NOT EXISTS service_user (
-    user_id INTEGER PRIMARY KEY,
-    email VARCHAR,
-    login VARCHAR,
-    name VARCHAR,
-    birthday DATE,
-    status VARCHAR
+
+
+CREATE TABLE IF NOT EXISTS public.genre
+(
+    genre_id integer AUTO_INCREMENT NOT NULL,
+    name     character varying
 );
 
-CREATE TABLE IF NOT EXISTS friendship (
-    user1_id INTEGER,
-    user2_id INTEGER,
-    PRIMARY KEY (user1_id, user2_id)
+
+CREATE TABLE IF NOT EXISTS public.rating
+(
+    rating_id integer AUTO_INCREMENT NOT NULL,
+    name      character varying
 );
 
-CREATE TABLE IF NOT EXISTS likes (
-    user_id INTEGER,
-    film_id INTEGER,
-    PRIMARY KEY (user_id, film_id)
+
+CREATE TABLE IF NOT EXISTS public.USERS
+(
+    user_id  integer AUTO_INCREMENT NOT NULL,
+    email    character varying,
+    login    character varying,
+    name     character varying,
+    birthday date
 );
 
-ALTER TABLE film_genre ADD FOREIGN KEY (film_id) REFERENCES films(film_id);
-ALTER TABLE film_genre ADD FOREIGN KEY (genre_id) REFERENCES genre_list(genre_id);
-ALTER TABLE friendship ADD FOREIGN KEY (user1_id) REFERENCES service_user(user_id);
-ALTER TABLE friendship ADD FOREIGN KEY (user2_id) REFERENCES service_user(user_id);
-ALTER TABLE likes ADD FOREIGN KEY (user_id) REFERENCES service_user(user_id);
-ALTER TABLE likes ADD FOREIGN KEY (film_id) REFERENCES films(film_id);
-ALTER TABLE films ADD FOREIGN KEY (rating_id) REFERENCES rating_list(rating_id);
+
+ALTER TABLE public.film_genre
+    ADD CONSTRAINT IF NOT EXISTS film_genre_pkey PRIMARY KEY (film_genre_id);
+
+
+ALTER TABLE public.film
+    ADD CONSTRAINT IF NOT EXISTS film_pkey PRIMARY KEY (film_id);
+
+
+ALTER TABLE public.friendship
+    ADD CONSTRAINT IF NOT EXISTS friendship_pkey PRIMARY KEY (friendship_id);
+
+
+ALTER TABLE public.genre
+    ADD CONSTRAINT IF NOT EXISTS genre_pkey PRIMARY KEY (genre_id);
+
+
+ALTER TABLE public.film_like
+    ADD CONSTRAINT IF NOT EXISTS like_pkey PRIMARY KEY (like_id);
+
+
+ALTER TABLE public.rating
+    ADD CONSTRAINT IF NOT EXISTS rating_pkey PRIMARY KEY (rating_id);
+
+
+ALTER TABLE public.USERS
+    ADD CONSTRAINT IF NOT EXISTS user_pkey PRIMARY KEY (user_id);
+
+ALTER TABLE public.film
+    ADD CONSTRAINT IF NOT EXISTS fk1 FOREIGN KEY (rating_id) REFERENCES public.rating (rating_id);
+
+
+
+ALTER TABLE public.film_genre
+    ADD CONSTRAINT IF NOT EXISTS fk1 FOREIGN KEY (film_id) REFERENCES public.film (film_id);
+
+
+ALTER TABLE public.friendship
+    ADD CONSTRAINT IF NOT EXISTS fk1 FOREIGN KEY (user_id) REFERENCES public.USERS (user_id);
+
+
+
+ALTER TABLE public.film_like
+    ADD CONSTRAINT IF NOT EXISTS fk1 FOREIGN KEY (film_id) REFERENCES public.film (film_id);
+
+
+
+ALTER TABLE public.film_genre
+    ADD CONSTRAINT IF NOT EXISTS fk2 FOREIGN KEY (genre_id) REFERENCES public.genre (genre_id);
+
+
+
+ALTER TABLE public.friendship
+    ADD CONSTRAINT IF NOT EXISTS fk2 FOREIGN KEY (friend_id) REFERENCES public.USERS (user_id);
+
+
+
+ALTER TABLE public.film_like
+    ADD CONSTRAINT IF NOT EXISTS fk2 FOREIGN KEY (user_id) REFERENCES public.USERS (user_id);
+
+
+
