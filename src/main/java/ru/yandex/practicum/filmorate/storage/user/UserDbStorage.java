@@ -1,31 +1,34 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.sql.*;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
-
 
 @Slf4j
 @Component()
 @Qualifier("UserDbStorage")
 public class UserDbStorage implements UserStorage {
+
     private final JdbcTemplate jdbcTemplate;
-    
+
     private final String UPDATE_USER =
             "UPDATE PUBLIC.USERS SET EMAIL=?, LOGIN=?, NAME=?, BIRTHDAY=? WHERE USER_ID=?";
-    
+
     private final String SELECT_USER_BY_ID = "SELECT * FROM PUBLIC.USERS WHERE USER_ID=?";
 
     public UserDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
     @Override
     public User create(User user) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
@@ -49,6 +52,7 @@ public class UserDbStorage implements UserStorage {
         });
         return user;
     }
+
     @Override
     public User getUser(Long id) {
         return jdbcTemplate.queryForObject(SELECT_USER_BY_ID, this::mapRowToUser, id);

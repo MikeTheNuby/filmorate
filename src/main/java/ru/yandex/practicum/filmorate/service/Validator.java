@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.Month;
 
 public class Validator {
+
     public static void validateFilm(Film film) {
 
         if (film.getName() == null || film.getName().isBlank()) {

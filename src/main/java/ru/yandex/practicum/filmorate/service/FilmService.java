@@ -22,6 +22,7 @@ import static ru.yandex.practicum.filmorate.service.Validator.validateFilm;
 @Slf4j
 @Service
 public class FilmService {
+
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
     private final GenreStorage genreDbStorage;
@@ -29,11 +30,13 @@ public class FilmService {
     private final LikeDbStorage likeDbStorage;
 
     @Autowired
-    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage,
-                       @Qualifier("UserDbStorage") UserStorage userStorage,
-                       GenreStorage genreDbStorage,
-                       MpaDbStorage mpaDbStorage,
-                       LikeDbStorage likeDbStorage) {
+    public FilmService(
+            @Qualifier("FilmDbStorage") FilmStorage filmStorage,
+            @Qualifier("UserDbStorage") UserStorage userStorage,
+            GenreStorage genreDbStorage,
+            MpaDbStorage mpaDbStorage,
+            LikeDbStorage likeDbStorage
+    ) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
         this.genreDbStorage = genreDbStorage;

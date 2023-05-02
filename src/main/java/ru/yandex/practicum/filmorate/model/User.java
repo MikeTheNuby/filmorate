@@ -16,6 +16,7 @@ import java.util.Set;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @Builder
 public class User {
+
     @Min(value = 0, message = "Значение id не может быть отрицательным.")
     private long id;
     private String name;
@@ -27,11 +28,6 @@ public class User {
     @Past(message = "Дата рождения не может быть в будущем времени.")
     private LocalDate birthday;
     private final Set<Long> friends = new HashSet<>();
-
-    public Set<Long> getFriends() {
-
-        return friends;
-    }
 
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();
