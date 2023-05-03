@@ -102,11 +102,11 @@ public class FilmService {
     }
 
     public void addLike(Long idFilm, Long idUser) {
-        CheckFilmAndUser(idFilm, idUser);
+        checkFilmAndUser(idFilm, idUser);
         likeDbStorage.addFilmLike(idFilm, idUser);
     }
 
-    private void CheckFilmAndUser(Long idFilm, Long idUser) {
+    private void checkFilmAndUser(Long idFilm, Long idUser) {
         if (!filmStorage.contains(idFilm)) {
             log.warn("Film with id=" + idFilm + " not found");
             throw new ResourceNotFoundException("Film not found");
@@ -119,7 +119,7 @@ public class FilmService {
     }
 
     public void removeLike(Long idFilm, Long idUser) {
-        CheckFilmAndUser(idFilm, idUser);
+        checkFilmAndUser(idFilm, idUser);
         likeDbStorage.removeFilmLike(idFilm, idUser);
     }
 
