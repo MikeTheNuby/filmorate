@@ -16,25 +16,25 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> ResourceNotFound(final ResourceNotFoundException e) {
+    public Map<String, String> resourceNotFound(final ResourceNotFoundException e) {
         return Map.of("message", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> Validation(final ValidationException e) {
+    public Map<String, String> validation(final ValidationException e) {
         return Map.of("message", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> UserAlreadyExist(final UserAlreadyExistException e) {
+    public Map<String, String> userAlreadyExist(final UserAlreadyExistException e) {
         return Map.of("message", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> FilmAlreadyExist(final FilmAlreadyExistException e) {
+    public Map<String, String> filmAlreadyExist(final FilmAlreadyExistException e) {
         return Map.of("message", e.getMessage());
     }
 }
