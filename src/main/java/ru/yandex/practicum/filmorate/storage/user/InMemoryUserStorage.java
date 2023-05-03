@@ -44,5 +44,4 @@ public class InMemoryUserStorage implements UserStorage {
     public User getUser(Long id) {
         return users.get(id);
     }
-
 }

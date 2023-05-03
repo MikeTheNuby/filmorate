@@ -20,13 +20,14 @@ import java.util.List;
 @Component()
 @Qualifier("FilmDbStorage")
 public class FilmDbStorage implements FilmStorage {
+
     private final JdbcTemplate jdbcTemplate;
 
     private final String UPDATE_FILM =
             "UPDATE PUBLIC.FILM " +
                     "SET NAME=?, DESCRIPTION=?, RELEASE_DATE=?, DURATION=? , RATING_ID=? " +
                     "WHERE FILM_ID=?";
-    
+
     private final String SELECT_FILM_BY_ID =
             "SELECT F.*, R.NAME AS RATING_NAME " +
                     "FROM PUBLIC.FILM F LEFT JOIN PUBLIC.RATING R ON F.RATING_ID=R.RATING_ID " +
@@ -63,12 +64,12 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> findAll() {
-        String SELECT_ALL_FILM = "SELECT F.*, r.NAME AS RATING_NAME " +
+        String SELECT_ALL_FILMS = "SELECT F.*, r.NAME AS RATING_NAME " +
                 "FROM PUBLIC.FILM f LEFT JOIN PUBLIC.RATING r ON F.RATING_ID=R.RATING_ID";
-        return jdbcTemplate.query(SELECT_ALL_FILM, this::mapRowToFilm);
+        return jdbcTemplate.query(SELECT_ALL_FILMS, this::mapRowToFilm);
     }
 
-    public List<Film> findTop10Films(int count) {
+    public List<Film> findTopFilms(int count) {
         String SELECT_TOP_FILMS = "SELECT F.*, R.NAME AS RATING_NAME, COUNT(FL.USER_ID) LIKES " +
                 "FROM PUBLIC.FILM F LEFT JOIN PUBLIC.FILM_LIKE FL ON F.FILM_ID = FL.FILM_ID " +
                 "LEFT JOIN PUBLIC.RATING R ON F.RATING_ID=R.RATING_ID " +

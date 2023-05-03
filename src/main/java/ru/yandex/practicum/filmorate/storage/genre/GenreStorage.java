@@ -16,5 +16,4 @@ public interface GenreStorage {
     void addFilmGenre(long idFilm, long idGenre);
 
     void removeFilmAllGenre(long idFilm);
-
 }

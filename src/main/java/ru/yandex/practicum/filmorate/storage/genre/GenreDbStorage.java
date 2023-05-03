@@ -43,10 +43,10 @@ public class GenreDbStorage implements GenreStorage {
     @Override
     public List<Genre> getFilmGenres(Long idFilm) {
         try {
-            String SELECT_FILM_GENRE = "SELECT G.GENRE_ID AS GENRE_ID, G.NAME AS NAME  " +
+            String SELECT_GENRE = "SELECT G.GENRE_ID AS GENRE_ID, G.NAME AS NAME  " +
                     "FROM PUBLIC.FILM_GENRE FG LEFT JOIN PUBLIC.GENRE G ON FG.GENRE_ID = G.GENRE_ID " +
                     "WHERE FG.FILM_ID=? ORDER BY GENRE_ID";
-            return jdbcTemplate.query(SELECT_FILM_GENRE, this::mapRowToGenre, idFilm);
+            return jdbcTemplate.query(SELECT_GENRE, this::mapRowToGenre, idFilm);
         } catch (EmptyResultDataAccessException e) {
             return new ArrayList<>();
         }
@@ -61,18 +61,18 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public void addFilmGenre(long idFilm, long idGenre) {
-        String INSERT_FILM_GENRE = "INSERT INTO PUBLIC.FILM_GENRE (FILM_ID, GENRE_ID) VALUES(?,?)";
+        String INSERT_GENRE = "INSERT INTO PUBLIC.FILM_GENRE (FILM_ID, GENRE_ID) VALUES(?,?)";
         jdbcTemplate.update(
-                INSERT_FILM_GENRE,
+                INSERT_GENRE,
                 idFilm,
                 idGenre);
     }
 
     @Override
     public void removeFilmAllGenre(long idFilm) {
-        String DELETE_FILM_GENRE = "DELETE FROM PUBLIC.FILM_GENRE WHERE FILM_ID=?";
+        String DELETE_GENRE = "DELETE FROM PUBLIC.FILM_GENRE WHERE FILM_ID=?";
         jdbcTemplate.update(
-                DELETE_FILM_GENRE,
+                DELETE_GENRE,
                 idFilm);
     }
 

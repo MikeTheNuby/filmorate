@@ -70,8 +70,8 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> findAll() {
-        String SELECT_ALL_USER = "SELECT * FROM PUBLIC.USERS";
-        return jdbcTemplate.query(SELECT_ALL_USER, this::mapRowToUser);
+        String SELECT_ALL_USERS = "SELECT * FROM PUBLIC.USERS";
+        return jdbcTemplate.query(SELECT_ALL_USERS, this::mapRowToUser);
     }
 
     @Override

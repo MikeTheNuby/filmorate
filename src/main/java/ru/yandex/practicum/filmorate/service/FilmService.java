@@ -124,7 +124,7 @@ public class FilmService {
     }
 
     public List<Film> getPopularFilms(int count) {
-        List<Film> popularFilms = filmStorage.findTop10Films(count);
+        List<Film> popularFilms = filmStorage.findTopFilms(count);
         popularFilms.forEach(f -> genreDbStorage.getFilmGenres(f.getId()).forEach(f::addGenre));
         log.info(String.format("Top %d popular films is %s", count, popularFilms));
         return popularFilms;
