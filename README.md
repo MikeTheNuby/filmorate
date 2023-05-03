@@ -4,80 +4,98 @@
 
 ![db_map](src/main/resources/db_map.png)
 
-Эта база данных содержит информацию о фильмах, жанрах, рейтингах MPAA, пользователях, дружбе
+Эта база данных содержит информацию о фильмах, жанрах, рейтингах MPA, пользователях, дружбе
 между ними и лайках, которые они ставят фильмам.
 
-Схема состоит из семи таблиц: `films`, `ratings_list`, `genre_list`, `genres`, `users`,
-`friends` и `likes`.
+Схема состоит из семи таблиц: `film`, `rating`, `genre`, `film_genre`, `users`, `friendship`
+и `film_like`.
 
-Таблица `films` содержит информацию о фильмах, включая
-их `film_id`, `name`, `description`, `releaseDate`, `duration` и рейтинг `rating_id`.
+Таблица `film` содержит информацию о фильмах, включая
+их `film_id`, `name`, `description`, `release_date`, `duration` и рейтинг `rating_id`.
 
-Таблица `ratings_list` содержит список возможных рейтингов с их `rating_id` и `rating_title`.
+Таблица `rating` содержит список возможных рейтингов с их `rating_id` и названием.
 
-Таблица `genre_list` содержит список жанров с их `genre_id` и `genre_title`.
+Таблица `genre` содержит список жанров с их `genre_id` и названием.
 
-Таблица `genres` является связующей таблицей, которая соединяет фильмы с их жанрами. Она
+Таблица `film_genre` является связующей таблицей, которая соединяет фильмы с их жанрами. Она
 содержит две колонки: `film_id` и `genre_id`.
 
 Таблица `users` содержит информацию о пользователях сервиса, включая
-их `user_id`, `email`, `login`, `name`, `birthday` и статус.
+их `user_id`, `email`, `login`, `name` и дату рождения.
 
-Таблица `friends` представляет дружбу между пользователями. Она содержит две колонки: `user1_id`
-и `user2_id`.
+Таблица `friendship` представляет дружбу между пользователями. Она содержит две колонки: `user_id` и
+friend_id.
 
-Таблица `likes` представляет лайки фильмов пользователями. Она содержит две колонки:
-`film_id` и  `user_id`.
+Таблица `film_like` представляет лайки фильмов пользователями. Она содержит две колонки:  `film_id`
+и  `user_id`.
 
 ## Примеры запросов
 
-Добавить новый фильм
+Добавить новый фильм:
+
 ```sql
-INSERT INTO films (film_id, name, description, releaseDate, duration, rating_id)
-VALUES (1, 'The Shawshank Redemption', 'Two imprisoned men bond over a number of years...',
+INSERT INTO film (film_id, name, description, release_date, duration, rating_id)
+VALUES (1, 'The Shawshank Redemption',
+        'Два заключенных завязывают дружбу на протяжении многих лет...',
         '1994-09-22', 142, 1);
 ```
-Добавить новый рейтинг
+
+Добавить новый рейтинг:
+
 ```sql
-INSERT INTO ratings_list (rating_title)
+INSERT INTO rating (name)
 VALUES ('R');
 ```
-Добавить новый жанр
+
+Добавить новый жанр:
+
 ```sql
-INSERT INTO genre_list (genre_title)
-VALUES ('Drama');
+INSERT INTO genre (name)
+VALUES ('Драма');
 ```
-Связать фильм с жанром
+
+Связать фильм с жанром:
+
 ```sql
-INSERT INTO genres (film_id, genre_id)
+INSERT INTO film_genre (film_id, genre_id)
 VALUES (1, 1);
 ```
-Добавить нового пользователя
+
+Добавить нового пользователя:
+
 ```sql
 INSERT INTO users (user_id, email, login, name, birthday)
-VALUES (1, 'andy@example.com', 'andy', 'Andy Dufresne', '1959-06-06');
+VALUES (1, 'andy@example.com', 'andy', 'Энди Дюфрейн', '1959-06-06');
 ```
-Добавить запрос на дружбу от одного пользователя к другому
+
+Добавить запрос на дружбу от одного пользователя к другому:
+
 ```sql
-INSERT INTO friends (user1_id, user2_id)
+INSERT INTO friendship (user_id, friend_id)
 VALUES (1, 2);
 ```
-Поставить лайк фильму
+
+Поставить лайк фильму:
+
 ```sql
-INSERT INTO likes (user_id, film_id)
+INSERT INTO film_like (user_id, film_id)
 VALUES (1, 1);
 ```
-Найти все фильмы с лайками от пользователя
+
+Найти все фильмы с лайками от пользователя:
+
 ```sql
 SELECT f.*
-FROM films f
-JOIN likes l ON f.film_id = l.film_id
+FROM film f
+         JOIN film_like l ON f.film_id = l.film_id
 WHERE l.user_id = 1;
 ```
-Найти все жанры связанные с фильмом
+
+Найти все жанры связанные с фильмом:
+
 ```sql
 SELECT g.*
-FROM genre_list g
-JOIN genres fg ON g.genre_id = fg.genre_id
+FROM genre g
+         JOIN film_genre fg ON g.genre_id = fg.genre_id
 WHERE fg.film_id = 1;
 ```
