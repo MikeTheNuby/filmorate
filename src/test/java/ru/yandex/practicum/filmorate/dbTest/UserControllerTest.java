@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.dbTest;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserControllerTest {
 
     private static UserDbStorage userStorage;
@@ -115,6 +115,7 @@ class UserControllerTest {
     }
 
     @Test
+    @Order(1)
     public void testGetAllUsers() {
         var users = userStorage.findAll();
         assertEquals(3, users.size(), "Invalid number of users.");
