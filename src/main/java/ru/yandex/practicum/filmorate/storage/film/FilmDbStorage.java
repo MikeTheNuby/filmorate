@@ -106,12 +106,12 @@ public class FilmDbStorage implements FilmStorage {
 
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
         Date tmpDate = resultSet.getDate("release_date");
-        LocalDate release_date = tmpDate == null ? null : tmpDate.toLocalDate();
+        LocalDate releaseDate = tmpDate == null ? null : tmpDate.toLocalDate();
         return Film.builder()
                 .id(resultSet.getLong("film_id"))
                 .name(resultSet.getString("name"))
                 .description(resultSet.getString("description"))
-                .releaseDate(release_date)
+                .releaseDate(releaseDate)
                 .duration(resultSet.getLong("duration"))
                 .mpa(new Mpa(resultSet.getInt("rating_id"), resultSet.getString("rating_name")))
                 .build();
