@@ -79,7 +79,7 @@ class UserControllerTest {
                 .birthday(LocalDate.now().minusYears(20))
                 .build();
         User createdUser = userStorage.create(user);
-        assertThat(createdUser).hasFieldOrPropertyWithValue("id", 4L);
+        assertThat(createdUser).hasFieldOrPropertyWithValue("id", user.getId());
     }
 
     @Test
