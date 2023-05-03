@@ -26,14 +26,14 @@ public class MpaDbStorage implements MpaStorage {
     @Override
     public List<Mpa> getAllMpa() {
 
-        String SELECT_ALL_GENRES = "SELECT * FROM PUBLIC.RATING";
-        return jdbcTemplate.query(SELECT_ALL_GENRES, this::mapRowToEntity);
+        String selectAllGenres = "SELECT * FROM PUBLIC.RATING";
+        return jdbcTemplate.query(selectAllGenres, this::mapRowToEntity);
     }
 
     public Optional<Mpa> getMpa(long idMpa) {
         try {
-            String SELECT_GENRE_BY_ID = "SELECT * FROM PUBLIC.RATING WHERE RATING_ID=?";
-            return Optional.ofNullable(jdbcTemplate.queryForObject(SELECT_GENRE_BY_ID, this::mapRowToEntity, idMpa));
+            String selectGenreById = "SELECT * FROM PUBLIC.RATING WHERE RATING_ID=?";
+            return Optional.ofNullable(jdbcTemplate.queryForObject(selectGenreById, this::mapRowToEntity, idMpa));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }

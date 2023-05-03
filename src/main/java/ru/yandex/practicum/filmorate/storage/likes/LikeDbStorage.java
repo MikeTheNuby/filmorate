@@ -21,18 +21,18 @@ public class LikeDbStorage implements LikeStorage {
 
     @Override
     public void addFilmLike(Long idFilm, Long idUser) {
-        String INSERT_LIKE = "INSERT INTO PUBLIC.FILM_LIKE (FILM_ID, USER_ID) VALUES(?,?)";
+        String insertLike = "INSERT INTO PUBLIC.FILM_LIKE (FILM_ID, USER_ID) VALUES(?,?)";
         jdbcTemplate.update(
-                INSERT_LIKE,
+                insertLike,
                 idFilm,
                 idUser);
     }
 
     @Override
     public void removeFilmLike(Long idFilm, Long idUser) {
-        String DELETE_LIKE = "DELETE FROM PUBLIC.FILM_LIKE  WHERE FILM_ID=? AND USER_ID=? ";
+        String deleteLike = "DELETE FROM PUBLIC.FILM_LIKE  WHERE FILM_ID=? AND USER_ID=? ";
         jdbcTemplate.update(
-                DELETE_LIKE,
+                deleteLike,
                 idFilm,
                 idUser);
     }
@@ -40,8 +40,8 @@ public class LikeDbStorage implements LikeStorage {
     @Override
     public List<Long> getAllLikes(Long idFilm) {
         try {
-            String SELECT_LIKE = "SELECT USER_ID FROM PUBLIC.FILM_LIKE  WHERE FILM_ID=? ";
-            return jdbcTemplate.queryForList(SELECT_LIKE, Long.class, idFilm);
+            String selectLike = "SELECT USER_ID FROM PUBLIC.FILM_LIKE  WHERE FILM_ID=? ";
+            return jdbcTemplate.queryForList(selectLike, Long.class, idFilm);
         } catch (EmptyResultDataAccessException e) {
             return new ArrayList<>();
         }

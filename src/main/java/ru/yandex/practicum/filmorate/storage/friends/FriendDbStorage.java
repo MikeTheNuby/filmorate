@@ -31,26 +31,26 @@ public class FriendDbStorage implements FriendsStorage {
 
     @Override
     public void removeFriend(Long idUser, Long idFriend) {
-        String DELETE_FRIEND_BY_ID = "DELETE FROM PUBLIC.FRIENDSHIP " +
+        String deleteFriendById = "DELETE FROM PUBLIC.FRIENDSHIP " +
                 "WHERE USER_ID=? AND FRIEND_ID=?";
-        jdbcTemplate.update(DELETE_FRIEND_BY_ID, idUser, idFriend);
+        jdbcTemplate.update(deleteFriendById, idUser, idFriend);
     }
 
     @Override
     public List<User> getAllFriends(Long idUser) {
-        String SELECT_ALL_FRIENDS_BY_ID = "SELECT U.* FROM PUBLIC.FRIENDSHIP F " +
+        String selectAllFriendsById = "SELECT U.* FROM PUBLIC.FRIENDSHIP F " +
                 "LEFT JOIN PUBLIC.USERS U ON U.USER_ID=F.FRIEND_ID " +
                 "WHERE F.USER_ID=?";
-        return jdbcTemplate.query(SELECT_ALL_FRIENDS_BY_ID, this::mapRowToUser, idUser);
+        return jdbcTemplate.query(selectAllFriendsById, this::mapRowToUser, idUser);
     }
 
     @Override
     public List<User> getCommonFriends(Long idUser, Long idFriend) {
-        String SELECT_COMMON_FRIENDS = "SELECT U.* FROM FRIENDSHIP F " +
+        String selectCommonFriends = "SELECT U.* FROM FRIENDSHIP F " +
                 "LEFT JOIN PUBLIC.USERS U ON U.USER_ID=F.FRIEND_ID " +
                 "WHERE F.USER_ID=? AND " +
                 "F.FRIEND_ID IN(SELECT F2.FRIEND_ID FROM FRIENDSHIP F2 WHERE F2.USER_ID=?)";
-        return jdbcTemplate.query(SELECT_COMMON_FRIENDS, this::mapRowToUser, idUser, idFriend);
+        return jdbcTemplate.query(selectCommonFriends, this::mapRowToUser, idUser, idFriend);
     }
 
     private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
