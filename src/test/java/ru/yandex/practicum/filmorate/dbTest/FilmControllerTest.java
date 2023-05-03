@@ -9,14 +9,11 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.Validator;
 import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
-import ru.yandex.practicum.filmorate.storage.friends.FriendDbStorage;
 import ru.yandex.practicum.filmorate.storage.genre.GenreDbStorage;
 import ru.yandex.practicum.filmorate.storage.likes.LikeDbStorage;
 import ru.yandex.practicum.filmorate.storage.mpa.MpaDbStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 
 import java.time.LocalDate;
 
@@ -35,8 +32,6 @@ class FilmControllerTest {
 
     @BeforeAll
     public static void setUp(
-            @Autowired UserDbStorage userStorage,
-            @Autowired FriendDbStorage friendStorage,
             @Autowired FilmDbStorage filmDbStorage,
             @Autowired MpaDbStorage mpaStorage,
             @Autowired LikeDbStorage likeStorage,
@@ -54,35 +49,6 @@ class FilmControllerTest {
                 .mpa(Mpa.builder().id(1).build())
                 .build();
         filmDbStorage.create(film);
-
-        User user1 = User.builder()
-                .email("email")
-                .login("login")
-                .name("name")
-                .birthday(LocalDate.now().minusYears(20))
-                .build();
-        User createdUser = userStorage.create(user1);
-
-        User user2 = User.builder()
-                .email("email")
-                .login("login")
-                .name("name")
-                .birthday(LocalDate.now().minusYears(20))
-                .build();
-        User createdUser2 = userStorage.create(user2);
-
-        User user3 = User.builder()
-                .email("email")
-                .login("login")
-                .name("name")
-                .birthday(LocalDate.now().minusYears(20))
-                .build();
-        User createdUser3 = userStorage.create(user3);
-
-        friendStorage.addFriend(createdUser.getId(), createdUser2.getId());
-        friendStorage.addFriend(createdUser3.getId(), createdUser2.getId());
-        friendStorage.addFriend(createdUser3.getId(), createdUser.getId());
-
     }
 
     public static void setFilmStorage(FilmDbStorage filmDbStorage) {
