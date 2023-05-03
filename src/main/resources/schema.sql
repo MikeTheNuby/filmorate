@@ -1,137 +1,66 @@
-drop table IF EXISTS FILM;
-
-drop table IF EXISTS FILM_GENRE;
-
-drop table IF EXISTS FILM_LIKE;
-
-drop table IF EXISTS FRIENDSHIP;
-
-drop table IF EXISTS GENRE;
-
-drop table IF EXISTS RATING;
-
-drop table IF EXISTS USERS;
-
-CREATE TABLE IF NOT EXISTS public.film
+--схема будет создаваться заново при каждом запуске приложения: создание таблиц
+--избежать ошибок, связанных с многократным применением скрипта к БД — IF NOT EXISTS при создании таблиц и индексов.
+create table IF NOT EXISTS USERS
 (
-    film_id      integer AUTO_INCREMENT NOT NULL,
-    name         character varying      NOT NULL,
-    description  character varying,
-    release_date date,
-    duration     integer,
-    rating_id    integer
+    USER_ID  INTEGER auto_increment
+        primary key,
+    EMAIL    CHARACTER VARYING(255) not null,
+    LOGIN    CHARACTER VARYING(50)  not null,
+    NAME     CHARACTER VARYING(50)  not null,
+    BIRTHDAY DATE                   not null
 );
 
-
-CREATE TABLE IF NOT EXISTS public.film_genre
+create table IF NOT EXISTS FRIENDSHIP
 (
-    film_genre_id integer AUTO_INCREMENT NOT NULL,
-    film_id       integer                NOT NULL,
-    genre_id      integer                NOT NULL
+    USER_ID   INTEGER not null
+        references USERS (USER_ID) ON DELETE CASCADE,
+    FRIEND_ID INTEGER not null
+        references USERS (USER_ID) ON DELETE CASCADE,
+    STATUS    BOOLEAN not null,
+    primary key (USER_ID, FRIEND_ID)
 );
 
-
-
-CREATE TABLE IF NOT EXISTS public.film_like
+create table IF NOT EXISTS MPA
 (
-    like_id integer AUTO_INCREMENT NOT NULL,
-    film_id integer                NOT NULL,
-    user_id integer                NOT NULL
+    MPA_ID      INTEGER auto_increment
+        primary key,
+    NAME        CHARACTER VARYING(50) not null UNIQUE,
+    DESCRIPTION CHARACTER VARYING(100)
 );
 
-
-CREATE TABLE IF NOT EXISTS public.friendship
+create table IF NOT EXISTS GENRE
 (
-    friendship_id integer AUTO_INCREMENT NOT NULL,
-    user_id       integer                NOT NULL,
-    friend_id     integer                NOT NULL,
-    is_confirmed  boolean
+    GENRE_ID INTEGER auto_increment
+        primary key,
+    NAME     CHARACTER VARYING(50) UNIQUE
 );
 
-
-
-CREATE TABLE IF NOT EXISTS public.genre
+create table IF NOT EXISTS FILMS
 (
-    genre_id integer AUTO_INCREMENT NOT NULL,
-    name     character varying
+    FILM_ID      INTEGER auto_increment
+        primary key,
+    NAME         CHARACTER VARYING(150) not null,
+    DESCRIPTION  CHARACTER VARYING(200) not null,
+    RELEASE_DATE DATE                   not null,
+    DURATION     INTEGER                not null,
+    MPA_ID       INTEGER                not null
+        references MPA (MPA_ID) ON DELETE RESTRICT
 );
 
-
-CREATE TABLE IF NOT EXISTS public.rating
+create table IF NOT EXISTS FILM_GENRE
 (
-    rating_id integer AUTO_INCREMENT NOT NULL,
-    name      character varying
+    FILM_ID  INTEGER not null
+        references FILMS ON DELETE CASCADE,
+    GENRE_ID INTEGER not null
+        references GENRE ON DELETE CASCADE,
+    primary key (FILM_ID, GENRE_ID)
 );
 
-
-CREATE TABLE IF NOT EXISTS public.USERS
+create table IF NOT EXISTS LIKES
 (
-    user_id  integer AUTO_INCREMENT NOT NULL,
-    email    character varying,
-    login    character varying,
-    name     character varying,
-    birthday date
+    FILM_ID INTEGER not null
+        references FILMS ON DELETE CASCADE,
+    USER_ID INTEGER not null
+        references USERS ON DELETE CASCADE,
+    primary key (FILM_ID, USER_ID)
 );
-
-
-ALTER TABLE public.film_genre
-    ADD CONSTRAINT IF NOT EXISTS film_genre_pkey PRIMARY KEY (film_genre_id);
-
-
-ALTER TABLE public.film
-    ADD CONSTRAINT IF NOT EXISTS film_pkey PRIMARY KEY (film_id);
-
-
-ALTER TABLE public.friendship
-    ADD CONSTRAINT IF NOT EXISTS friendship_pkey PRIMARY KEY (friendship_id);
-
-
-ALTER TABLE public.genre
-    ADD CONSTRAINT IF NOT EXISTS genre_pkey PRIMARY KEY (genre_id);
-
-
-ALTER TABLE public.film_like
-    ADD CONSTRAINT IF NOT EXISTS like_pkey PRIMARY KEY (like_id);
-
-
-ALTER TABLE public.rating
-    ADD CONSTRAINT IF NOT EXISTS rating_pkey PRIMARY KEY (rating_id);
-
-
-ALTER TABLE public.USERS
-    ADD CONSTRAINT IF NOT EXISTS user_pkey PRIMARY KEY (user_id);
-
-ALTER TABLE public.film
-    ADD CONSTRAINT IF NOT EXISTS fk1 FOREIGN KEY (rating_id) REFERENCES public.rating (rating_id);
-
-
-
-ALTER TABLE public.film_genre
-    ADD CONSTRAINT IF NOT EXISTS fk1 FOREIGN KEY (film_id) REFERENCES public.film (film_id);
-
-
-ALTER TABLE public.friendship
-    ADD CONSTRAINT IF NOT EXISTS fk1 FOREIGN KEY (user_id) REFERENCES public.USERS (user_id);
-
-
-
-ALTER TABLE public.film_like
-    ADD CONSTRAINT IF NOT EXISTS fk1 FOREIGN KEY (film_id) REFERENCES public.film (film_id);
-
-
-
-ALTER TABLE public.film_genre
-    ADD CONSTRAINT IF NOT EXISTS fk2 FOREIGN KEY (genre_id) REFERENCES public.genre (genre_id);
-
-
-
-ALTER TABLE public.friendship
-    ADD CONSTRAINT IF NOT EXISTS fk2 FOREIGN KEY (friend_id) REFERENCES public.USERS (user_id);
-
-
-
-ALTER TABLE public.film_like
-    ADD CONSTRAINT IF NOT EXISTS fk2 FOREIGN KEY (user_id) REFERENCES public.USERS (user_id);
-
-
-

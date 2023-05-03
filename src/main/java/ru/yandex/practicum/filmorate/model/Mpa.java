@@ -1,16 +1,18 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
+import javax.validation.constraints.Size;
+
 @Data
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Mpa {
-
-    private long id;
+    private int id;
+    @Size(min = 1, max = 5, message = "Длина названия рейтинга должна быть от 1 до 5 символов")
     private String name;
+    @Size(min = 1, max = 100, message = "Длина описания должна быть от 1 до 100 символов")
+    private String description;
 }

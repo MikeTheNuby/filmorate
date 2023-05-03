@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,21 +12,29 @@ import java.util.Map;
 import java.util.Set;
 
 @Data
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
-
-    @Min(value = 0, message = "Значение id не может быть отрицательным.")
     private long id;
-    private String name;
-    @NotBlank(message = "Логин не может быть пустым.")
-    private String login;
-    @Email(message = "Формат @mail не соответствует требованиям.")
+    @NotBlank(message = "E-mail не может быть пустым")
+    @Email(message = "Введен некорректный e-mail")
     private String email;
-    @NotNull(message = "Дата рождения не может быть пустой.")
-    @Past(message = "Дата рождения не может быть в будущем времени.")
+    @NotBlank(message = "Логин не может быть пустым")
+    @Pattern(regexp = "\\S+", message = "Логин содержит пробелы")
+    private String login;
+    private String name;
+    @NotNull(message = "Дата рождения не может быть пустой")
+    @PastOrPresent(message = "Дата рождения не может быть из будущего")
     private LocalDate birthday;
     private final Set<Long> friends = new HashSet<>();
+
+    public void addFriend(long id) {
+        friends.add(id);
+    }
+
+    public boolean deleteFriend(long id) {
+        return friends.remove(id);
+    }
 
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();
