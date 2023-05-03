@@ -219,7 +219,7 @@ class FilmControllerTest {
 
     @Test
     void shouldNotFilmCreateWithFailDescription() {
-        String INVALID_LENGTH = "British intelligence superspy Orson Fortune enjoyed a " +
+        String invalidLength = "British intelligence superspy Orson Fortune enjoyed a " +
                 "well-deserved " +
                 "a vacation when the homeland urgently needed his services. From a secret laboratory" +
                 "a supposedly lethal weapon has been stolen, so we muster a team of the best" +
@@ -228,7 +228,7 @@ class FilmControllerTest {
         Film film = Film.builder()
                 .id(1)
                 .name("name")
-                .description(INVALID_LENGTH)
+                .description(invalidLength)
                 .releaseDate(LocalDate.now())
                 .duration(1000L)
                 .build();
