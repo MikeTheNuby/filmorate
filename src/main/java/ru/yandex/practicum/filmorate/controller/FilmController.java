@@ -1,61 +1,62 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.List;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping("/films")
-@Slf4j
 public class FilmController {
 
-    private final FilmService filmService;
+    private final FilmService service;
 
-    public FilmController(FilmService filmService) {
-        this.filmService = filmService;
-    }
-
-    @PostMapping
-    public Film create(@NotNull @Valid @RequestBody Film film) {
-        return filmService.create(film);
-    }
-
-    @PutMapping
-    public Film update(@NotNull @Valid @RequestBody Film film) {
-        return filmService.update(film);
+    @Autowired
+    public FilmController(@Qualifier("DbFilmService") FilmService service) {
+        this.service = service;
     }
 
     @GetMapping
-    public List<Film> findAllFilms() {
-        return filmService.findAllFilms();
-    }
-
-    @PutMapping("/{id}/like/{userId}")
-    public ResponseEntity<Film> addLike(@PathVariable int id, @PathVariable int userId) {
-        return filmService.addLike(id, userId);
-    }
-
-    @DeleteMapping("{id}/like/{userId}")
-    public ResponseEntity<Film> removeLike(@PathVariable int id, @PathVariable int userId) {
-        return filmService.removeLike(id, userId);
-    }
-
-    @GetMapping("/popular")
-    public ResponseEntity<List<Film>> getPopularFilm(
-            @RequestParam(required = false,
-                    defaultValue = "10", name = "count") int count
-    ) {
-        return filmService.getPopularFilms(count);
+    public List<Film> getAllFilms() {
+        return service.getAllFilms();
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Film> getFilmById(@PathVariable long id) {
-        return filmService.getFilmById(id);
+    public Film findFilmById(@PathVariable long id) {
+        return service.findFilmById(id);
+    }
+
+    @GetMapping("/popular")
+    public List<Film> getPopularFilms(
+            @RequestParam(defaultValue = "10") Integer count) {
+        return service.getPopularFilms(count);
+    }
+
+    @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public Film addFilm(@Valid @RequestBody Film film) {
+        return service.addFilm(film);
+    }
+
+    @PutMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public Film updateFilm(@Valid @RequestBody Film film) {
+        return service.updateFilm(film);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public List<Long> addLike(@PathVariable long id, @PathVariable long userId) {
+        return service.addLike(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public List<Long> deleteLike(@PathVariable long id, @PathVariable long userId) {
+        return service.deleteLike(id, userId);
     }
 }
