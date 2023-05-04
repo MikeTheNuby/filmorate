@@ -16,14 +16,14 @@ import java.util.Set;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class Film implements Comparable<Film> {
 
-    @Min(value = 0, message = "Значение id не может быть отрицательным.")
+    @Min(value = 0, message = "id value cannot be negative.")
     private long id;
     private String name;
-    @Size(max = 200, message = "Размер описания превышает допустимый.")
+    @Size(max = 200, message = "Description size is too large.")
     private String description;
     @PastOrPresent
     private LocalDate releaseDate;
-    @Positive(message = "Длительность фильма не может быть отрицательной.")
+    @Positive(message = "Movie duration cannot be negative.")
     private long duration;
     private final Set<Long> likes = new HashSet<>();
 
