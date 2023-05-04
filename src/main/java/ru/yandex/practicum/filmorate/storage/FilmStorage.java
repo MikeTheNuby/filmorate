@@ -1,17 +1,30 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public interface FilmStorage {
 
-    void create(@NotNull @Valid @RequestBody Film film);
+    List<Film> getAllFilms();
 
-    void update(@NotNull @Valid @RequestBody Film film);
+    List<Film> getPopularFilms(int count);
 
-    List<Film> findAllFilms();
+    List<Long> getLikesByFilm(long filmId);
+
+    Film addFilm(Film film);
+
+    Film updateFilm(Film film);
+
+    Film findFilmById(long id);
+
+    void deleteGenreFromFilm(long filmId, int genreId);
+
+    void clearGenresFromFilm(long filmId);
+
+    void addGenreToFilm(long filmId, int genreId);
+
+    void deleteLike(long filmId, long userId);
+
+    void addLike(long filmId, long userId);
 }
