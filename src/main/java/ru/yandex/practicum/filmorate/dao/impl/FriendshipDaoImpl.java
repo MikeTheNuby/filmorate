@@ -16,28 +16,28 @@ public class FriendshipDaoImpl implements FriendshipDao {
 
     @Override
     public List<Long> getFriendsByUser(long id) {
-        String getFriendsByUser = "select friend_id from friendship where user_id =? and status = true " +
-                "union select user_id from friendship where friend_id = ?";
-        return jdbcTemplate.query(getFriendsByUser, (rs, rowNum) -> rs.getLong("friend_id"), id, id);
+        String getFriendsByUserQuery = "SELECT friend_id FROM friendship WHERE user_id = ? AND status = true " +
+                "UNION SELECT user_id FROM friendship WHERE friend_id = ?";
+        return jdbcTemplate.query(getFriendsByUserQuery, (resultSet, i) -> resultSet.getLong("friend_id"), id, id);
     }
 
     @Override
     public void addFriend(long userId, long friendId) {
-        String addFriend = "insert into friendship(user_id, friend_id, status) " +
-                "values (?, ?, false)";
+        String addFriend = "INSERT INTO friendship(user_id, friend_id, status) " +
+                "VALUES (?, ?, false)";
         jdbcTemplate.update(addFriend, friendId, userId);
     }
 
     @Override
     public boolean updateFriend(long userId, long friendId, boolean status) {
-        String updateFriend = "update friendship set status = ? " +
-                "where user_id = ? and friend_id = ?";
-        return jdbcTemplate.update(updateFriend, status, userId, friendId) > 0;
+        String updateFriendQuery = "UPDATE friendship SET status = ? WHERE user_id = ? AND friend_id = ?";
+        int rowsAffected = jdbcTemplate.update(updateFriendQuery, status, userId, friendId);
+        return rowsAffected > 0;
     }
 
     @Override
     public void deleteFriend(long userId, long friendId) {
-        String sql = "delete from friendship where (user_id = ? AND friend_id = ?)";
+        String sql = "DELETE from friendship WHERE (user_id = ? AND friend_id = ?)";
         jdbcTemplate.update(sql, userId, friendId);
     }
 }
