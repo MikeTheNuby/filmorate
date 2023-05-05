@@ -6,6 +6,7 @@ import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse {
+
     @lombok.Getter
     String error;
 
@@ -18,5 +19,4 @@ public class ErrorResponse {
     public ErrorResponse(Map<String, String> errorsValidation) {
         this.errorsValidation = errorsValidation;
     }
-
 }

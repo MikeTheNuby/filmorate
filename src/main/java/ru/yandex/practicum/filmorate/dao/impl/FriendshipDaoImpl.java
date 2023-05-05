@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public class FriendshipDaoImpl implements FriendshipDao {
+
     private final JdbcTemplate jdbcTemplate;
 
     public FriendshipDaoImpl(JdbcTemplate jdbcTemplate) {

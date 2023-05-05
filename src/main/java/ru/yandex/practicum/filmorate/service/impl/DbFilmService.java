@@ -34,7 +34,7 @@ public class DbFilmService implements FilmService {
     public List<Film> getAllFilms() {
         return storage.getAllFilms().stream()
                 .peek(film -> genreDao.getGenresByFilm(film.getId())
-                .forEach(film::addGenre))
+                        .forEach(film::addGenre))
                 .collect(Collectors.toList());
     }
 
@@ -60,7 +60,7 @@ public class DbFilmService implements FilmService {
     public List<Film> getPopularFilms(Integer count) {
         return storage.getPopularFilms(count).stream()
                 .peek(film -> genreDao.getGenresByFilm(film.getId())
-                .forEach(film::addGenre))
+                        .forEach(film::addGenre))
                 .collect(Collectors.toList());
     }
 

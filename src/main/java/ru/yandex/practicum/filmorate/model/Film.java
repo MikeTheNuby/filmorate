@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Film {
+
     @Min(value = 0, message = "id value cannot be negative.")
     private long id;
     @NotBlank(message = "Title missing.")

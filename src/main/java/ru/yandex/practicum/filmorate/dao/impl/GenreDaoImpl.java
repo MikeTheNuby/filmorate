@@ -15,6 +15,7 @@ import java.util.List;
 @Repository
 @Slf4j
 public class GenreDaoImpl implements GenreDao {
+
     private final JdbcTemplate jdbcTemplate;
 
     public GenreDaoImpl(JdbcTemplate jdbcTemplate) {

@@ -8,6 +8,7 @@ import lombok.Data;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Friendship {
+
     private long userId;
     private long friendId;
     private boolean status;

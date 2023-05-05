@@ -14,8 +14,10 @@ public class ReleaseValidator implements
     }
 
     @Override
-    public boolean isValid(LocalDate date,
-                           ConstraintValidatorContext cxt) {
+    public boolean isValid(
+            LocalDate date,
+            ConstraintValidatorContext cxt
+    ) {
         return (date != null) && (!date.isBefore(FIRST_FILM_DATE));
     }
 }

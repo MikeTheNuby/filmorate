@@ -12,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/mpa")
 public class MpaController {
+
     private final MpaDao mpaDao;
 
     public MpaController(MpaDao mpaDao) {

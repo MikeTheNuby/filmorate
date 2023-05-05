@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class FilmorateApplicationTests {
+
     private final UserDbStorage userStorage;
     private final FilmDbStorage filmStorage;
     private final FriendshipDao friendshipDao;
@@ -71,7 +72,8 @@ class FilmorateApplicationTests {
     @AfterEach
     public void cleanDb() {
         JdbcTestUtils.deleteFromTables(jdbcTemplate,
-                "users", "films", "friendship", "film_genre", "likes");
+                "users", "films", "friendship", "film_genre", "likes"
+        );
         jdbcTemplate.update("ALTER TABLE USERS ALTER COLUMN user_id RESTART WITH 1");
         jdbcTemplate.update("ALTER TABLE FILMS ALTER COLUMN film_id RESTART WITH 1");
     }
