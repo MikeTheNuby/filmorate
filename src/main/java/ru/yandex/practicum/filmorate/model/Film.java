@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.validation.ReleaseConstraint;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,6 +14,7 @@ import java.util.stream.Collectors;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Film {
+    @Min(value = 0, message = "id value cannot be negative.")
     private long id;
     @NotBlank(message = "Title missing.")
     private String name;

@@ -16,6 +16,7 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
 
+    @Min(value = 0, message = "Значение id не может быть отрицательным.")
     private long id;
     @NotBlank(message = "Email cannot be empty.")
     @Email(message = "Invalid e-mail entered.")

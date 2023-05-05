@@ -161,10 +161,10 @@ class FilmorateApplicationTests {
                 .hasFieldOrPropertyWithValue("mpa", mpaBuilder.name("G").build());
 
         NotFoundException exception = assertThrows(NotFoundException.class, () -> filmStorage.findFilmById(-1L));
-        assertEquals("Movie with id -1 not found", exception.getMessage());
+        assertEquals("Movie with id -1 not found.", exception.getMessage());
 
         exception = assertThrows(NotFoundException.class, () -> filmStorage.findFilmById(999L));
-        assertEquals("Movie with id 999 not found", exception.getMessage());
+        assertEquals("Movie with id 999 not found.", exception.getMessage());
     }
 
     @Test
@@ -186,24 +186,24 @@ class FilmorateApplicationTests {
     public void shouldUpdateFilm() {
         Film film = filmBuilder.build();
         filmStorage.addFilm(film);
-        Film filmToUpdate = filmBuilder.id(1L).name("Film name Updated").build();
+        Film filmToUpdate = filmBuilder.id(1L).name("Film name Updated.").build();
         Film filmUpdated = filmStorage.updateFilm(filmToUpdate);
         assertThat(filmUpdated)
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("id", 1L)
-                .hasFieldOrPropertyWithValue("name", "Film name Updated");
+                .hasFieldOrPropertyWithValue("name", "Film name Updated.");
 
         NotFoundException ex = assertThrows(
                 NotFoundException.class,
                 () -> filmStorage.updateFilm(filmBuilder.id(-1L).build())
         );
-        assertEquals("Movie with id -1 not found", ex.getMessage());
+        assertEquals("Movie with id -1 not found.", ex.getMessage());
 
         ex = assertThrows(
                 NotFoundException.class,
                 () -> filmStorage.updateFilm(filmBuilder.id(999L).build())
         );
-        assertEquals("Movie with id 999 not found", ex.getMessage());
+        assertEquals("Movie with id 999 not found.", ex.getMessage());
     }
 
     @Test

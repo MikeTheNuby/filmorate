@@ -41,8 +41,8 @@ public class FilmDbStorage implements FilmStorage {
         try {
             return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> mapRowToFilm(rs), id);
         } catch (DataRetrievalFailureException e) {
-            log.warn("Movie with id {} not found", id);
-            throw new NotFoundException(String.format("Movie with id %d not found", id));
+            log.warn("Movie with id {} not found.", id);
+            throw new NotFoundException(String.format("Movie with id %d not found.", id));
         }
     }
 
@@ -50,7 +50,7 @@ public class FilmDbStorage implements FilmStorage {
     @SneakyThrows
     public Film addFilm(Film film) {
         if (film.getName().isEmpty()) {
-            throw new IllegalArgumentException("Title missing");
+            throw new IllegalArgumentException("Title missing.");
         }
 
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
@@ -81,8 +81,8 @@ public class FilmDbStorage implements FilmStorage {
             film.getGenres().forEach(genre -> addGenreToFilm(film.getId(), genre.getId()));
             return film;
         }
-        log.warn("Movie with id {} not found", film.getId());
-        throw new NotFoundException(String.format("Movie with id %d not found", film.getId()));
+        log.warn("Movie with id {} not found.", film.getId());
+        throw new NotFoundException(String.format("Movie with id %d not found.", film.getId()));
     }
 
     public List<Film> getPopularFilms(int count) {
