@@ -23,7 +23,7 @@ import java.util.Objects;
 @Slf4j
 public class ErrorHandler {
 
-    private final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
+    private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -56,7 +56,7 @@ public class ErrorHandler {
             String message = error.getDefaultMessage();
             errors.put(fieldName, message);
         });
-        log.error(mapper.writeValueAsString(errors), e);
+        log.error(objectMapper.writeValueAsString(errors), e);
         return new ErrorResponse(errors);
     }
 
