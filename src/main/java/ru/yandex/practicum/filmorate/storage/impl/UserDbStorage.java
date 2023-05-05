@@ -29,13 +29,13 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getAllUsers() {
-        String sql = "select * from users";
+        String sql = "SELECT * FROM users";
         return jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToUser(rs));
     }
 
     @Override
     public User findUserById(long id) {
-        String sql = "select * from users where user_id = ?";
+        String sql = "SELECT * FROM users WHERE user_id = ?";
         try {
             return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> mapRowToUser(rs), id);
         } catch (DataRetrievalFailureException e) {
@@ -62,7 +62,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User updateUser(User user) {
-        String sql = "update users set email = ?, login = ?, name = ?, birthday = ? where user_id = ?";
+        String sql = "UPDATE users SET email = ?, login = ?, name = ?, birthday = ? WHERE user_id = ?";
         if (jdbcTemplate.update(sql, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), user.getId()) > 0) {
             return user;
         }

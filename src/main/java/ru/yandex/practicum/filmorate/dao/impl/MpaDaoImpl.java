@@ -23,13 +23,13 @@ public class MpaDaoImpl implements MpaDao {
 
     @Override
     public List<Mpa> getMpaList() {
-        String getMpa = "select * from mpa";
+        String getMpa = "SELECT * FROM mpa";
         return jdbcTemplate.query(getMpa, (rs, rowNum) -> mapRowToMpa(rs));
     }
 
     @Override
     public Mpa findMpaById(int id) {
-        String findMpaById = "select * from mpa where mpa_id = ?";
+        String findMpaById = "SELECT * FROM mpa WHERE mpa_id = ?";
         try {
             return jdbcTemplate.queryForObject(findMpaById, (rs, rowNum) -> mapRowToMpa(rs), id);
         } catch (DataRetrievalFailureException e) {

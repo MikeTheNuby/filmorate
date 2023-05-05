@@ -23,27 +23,27 @@ public class GenreDaoImpl implements GenreDao {
 
     @Override
     public List<Genre> getGenres() {
-        String getGenres = "select * from genre order by genre_id";
+        String getGenres = "SELECT * FROM genre ORDER BY genre_id";
         return jdbcTemplate.query(getGenres, (rs, rowNum) -> mapRowToGenre(rs));
     }
 
     @Override
     public Genre findGenreById(int id) {
-        String findGenreById = "select * from genre where genre_id = ?";
+        String findGenreById = "SELECT * FROM genre WHERE genre_id = ?";
         try {
             return jdbcTemplate.queryForObject(findGenreById, (rs, rowNum) -> mapRowToGenre(rs), id);
         } catch (DataRetrievalFailureException e) {
-            log.warn("Genre with id {} not found", id);
-            throw new NotFoundException(String.format("Genre with id %d not found", id));
+            log.warn("Genre with id {} not found.", id);
+            throw new NotFoundException(String.format("Genre with id %d not found.", id));
         }
     }
 
     @Override
     public List<Genre> getGenresByFilm(long id) {
-        String getGenresByFilm = "select g.* from film_genre as fg " +
-                "join genre as g on fg.genre_id = g.genre_id " +
-                "where fg.film_id =? " +
-                "order by g.genre_id";
+        String getGenresByFilm = "SELECT g.* FROM film_genre AS fg " +
+                "JOIN genre AS g ON fg.genre_id = g.genre_id " +
+                "WHERE fg.film_id =? " +
+                "ORDER BY g.genre_id";
         return jdbcTemplate.query(getGenresByFilm, (rs, rowNum) -> mapRowToGenre(rs), id);
     }
 
