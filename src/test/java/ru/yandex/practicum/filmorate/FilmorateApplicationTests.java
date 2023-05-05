@@ -49,7 +49,7 @@ class FilmorateApplicationTests {
     @BeforeEach
     public void setup() {
         userBuilder = User.builder()
-                .email("e@mail.ru")
+                .email("user@google.com")
                 .login("Login")
                 .name("Name")
                 .birthday(LocalDate.of(1985, 9, 7));

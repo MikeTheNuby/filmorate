@@ -49,7 +49,7 @@ class UserControllerTest {
     @BeforeEach
     void setupBuilder() {
         userBuilder = User.builder()
-                .email("e@mail.ru")
+                .email("user@google.com")
                 .login("Login")
                 .birthday(LocalDate.of(1985, 9, 7));
     }
