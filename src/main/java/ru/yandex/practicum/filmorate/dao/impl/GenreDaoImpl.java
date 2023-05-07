@@ -29,10 +29,10 @@ public class GenreDaoImpl implements GenreDao {
     }
 
     @Override
-    public Genre findGenreById(int id) {
-        String findGenreById = "SELECT * FROM genre WHERE genre_id = ?";
+    public Genre getGenreById(int id) {
+        String getGenreById = "SELECT * FROM genre WHERE genre_id = ?";
         try {
-            return jdbcTemplate.queryForObject(findGenreById, (rs, rowNum) -> mapRowToGenre(rs), id);
+            return jdbcTemplate.queryForObject(getGenreById, (rs, rowNum) -> mapRowToGenre(rs), id);
         } catch (DataRetrievalFailureException e) {
             log.warn("Genre with id {} not found.", id);
             throw new NotFoundException(String.format("Genre with id %d not found.", id));
