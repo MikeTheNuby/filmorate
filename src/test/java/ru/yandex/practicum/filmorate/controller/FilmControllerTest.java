@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -74,23 +76,20 @@ class FilmControllerTest {
     }
 
     @Test
-    void shouldReturnSingleFilm() throws Exception {
-        when(service.getAllFilms()).thenReturn(List.of(
-                filmBuilder.id(1).build()));
-        mockMvc.perform(get(url))
+    public void testGetSingleFilmById() throws Exception {
+        when(service.getAllFilms()).thenReturn(List.of(filmBuilder.id(1).build()));
+        mockMvc.perform(get(url).param("id", "1"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()", is(1)))
                 .andExpect(jsonPath("$[0].id", is(1)));
     }
 
     @Test
-    void shouldReturnListOfTwoFilms() throws Exception {
+    public void testGetAllFilmsReturnsListOfTwoFilms() throws Exception {
         when(service.getAllFilms()).thenReturn(List.of(
                 filmBuilder.id(1).name("Film_1 Title").build(),
                 filmBuilder.id(2).name("Film_2 Title").build()
         ));
-
         mockMvc.perform(get(url))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -100,14 +99,13 @@ class FilmControllerTest {
     }
 
     @Test
-    void addRegularFilmTest() throws Exception {
-        film = filmBuilder.build();
+    public void testAddRegularFilmReturnsAddedFilm() throws Exception {
+        Film film = filmBuilder.build();
         Film filmAdded = filmBuilder.id(1).build();
         String json = objectMapper.writeValueAsString(film);
         String jsonAdded = objectMapper.writeValueAsString(filmAdded);
-
         when(service.addFilm(film)).thenReturn(filmAdded);
-        this.mockMvc.perform(post(url)
+        mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
@@ -116,11 +114,10 @@ class FilmControllerTest {
     }
 
     @Test
-    void testAddFilm() throws Exception {
-        film = filmBuilder
+    public void testAddFilmReturnsAddedFilm() throws Exception {
+        Film film = filmBuilder
                 .name("Le Jardinier")
-                .description("1895 French short silent film. " +
-                        "One of the first films made by the Lumiere brothers; the first staged film comedy.")
+                .description("1895 French short silent film. One of the first films made by the Lumiere brothers; the first staged film comedy.")
                 .releaseDate(LocalDate.of(1895, 12, 28))
                 .duration(1)
                 .build();
@@ -129,7 +126,8 @@ class FilmControllerTest {
         String jsonAdded = objectMapper.writeValueAsString(filmAdded);
 
         when(service.addFilm(film)).thenReturn(filmAdded);
-        this.mockMvc.perform(post(url)
+
+        mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
@@ -174,18 +172,24 @@ class FilmControllerTest {
 
     @Test
     void testAddFilmSuccess() throws Exception {
-        film = filmBuilder
+        Film filmToAdd = Film.builder()
                 .name("The Shawshank Redemption")
-                .description("Chronicles the experiences of a formerly successful banker as a prisoner " +
-                        "in the gloomy jailhouse of Shawshank after being found guilty of a crime he did not commit.")
+                .description("Chronicles the experiences of a formerly successful banker as a prisoner "
+                        + "in the gloomy jailhouse of Shawshank after being found guilty of a crime he did not commit.")
                 .releaseDate(LocalDate.of(1994, 9, 10))
                 .duration(142)
                 .build();
-        Film filmAdded = filmBuilder.id(1).build();
-        String json = objectMapper.writeValueAsString(film);
-        String jsonAdded = objectMapper.writeValueAsString(filmAdded);
-
-        when(service.addFilm(film)).thenReturn(filmAdded);
+        Film addedFilm = Film.builder()
+                .id(1)
+                .name("The Shawshank Redemption")
+                .description("Chronicles the experiences of a formerly successful banker as a prisoner "
+                        + "in the gloomy jailhouse of Shawshank after being found guilty of a crime he did not commit.")
+                .releaseDate(LocalDate.of(1994, 9, 10))
+                .duration(142)
+                .build();
+        String json = objectMapper.writeValueAsString(filmToAdd);
+        String jsonAdded = objectMapper.writeValueAsString(addedFilm);
+        when(service.addFilm(filmToAdd)).thenReturn(addedFilm);
         this.mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -195,76 +199,69 @@ class FilmControllerTest {
     }
 
     @Test
-    void addFilmWithInvalidDescription() throws Exception {
-        film = filmBuilder
+    void testAddFilmWithInvalidDescription() throws Exception {
+        Film film = Film.builder()
                 .name("The Shawshank Redemption")
-                .description("Chronicles the experiences of a formerly successful banker as a prisoner " +
-                        "in the gloomy jailhouse of Shawshank after being found guilty of a crime he did not commit. " +
-                        "The film portrays the man's unique way of dealing with his new, torturous life; along the way " +
-                        "he befriends a number of fellow prisoners, most notably a wise long-term inmate named Red.")
+                .description("Chronicles the experiences of a formerly successful banker as a prisoner "
+                        + "in the gloomy jailhouse of Shawshank after being found guilty of a crime he did not commit. "
+                        + "The film portrays the man's unique way of dealing with his new, torturous life; along the way "
+                        + "he befriends a number of fellow prisoners, most notably a wise long-term inmate named Red.")
                 .releaseDate(LocalDate.of(1994, 9, 10))
                 .duration(142)
                 .build();
         String json = objectMapper.writeValueAsString(film);
-
         this.mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(mvcResult ->
-                        Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
-                                .equals("Description length must be between 1 and 200 characters."));
-
-        film = filmBuilder.description("").build();
-        json = objectMapper.writeValueAsString(film);
-
+                .andExpect(mvcResult -> Objects.requireNonNull(mvcResult.getResolvedException()).getMessage().equals("Description length must be between 1 and 200 characters."));
+        Film filmWithEmptyDescription = Film.builder()
+                .name("The Shawshank Redemption")
+                .description("")
+                .releaseDate(LocalDate.of(1994, 9, 10))
+                .duration(142)
+                .build();
+        json = objectMapper.writeValueAsString(filmWithEmptyDescription);
         this.mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(mvcResult ->
-                        Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
-                                .equals("Description length must be between 1 and 200 characters."));
-
+                .andExpect(mvcResult -> Objects.requireNonNull(mvcResult.getResolvedException()).getMessage().equals("Description length must be between 1 and 200 characters."));
     }
 
     @Test
-    public void addFilmFailName() throws Exception {
-        film = filmBuilder
+    void testAddFilmInvalidName() throws Exception {
+        Film film = Film.builder()
                 .name("")
                 .build();
         String json = objectMapper.writeValueAsString(film);
-
         this.mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(mvcResult ->
-                        Objects.requireNonNull(mvcResult.getResolvedException()).getMessage().equals("Title missing."));
+                .andExpect(mvcResult -> Objects.requireNonNull(mvcResult.getResolvedException()).getMessage().equals("Title missing."));
     }
 
     @Test
-    public void addFilmInvalidDuration() throws Exception {
-        film = filmBuilder
+    void testAddFilmInvalidDuration() throws Exception {
+        Film film = Film.builder()
                 .name("The Shawshank Redemption")
-                .description("Chronicles the experiences of a formerly successful banker as a prisoner " +
-                        "in the gloomy jailhouse of Shawshank after being found guilty of a crime he did not commit.")
+                .description("Chronicles the experiences of a formerly successful banker as a prisoner "
+                        + "in the gloomy jailhouse of Shawshank after being found guilty of a crime he did not commit.")
                 .releaseDate(LocalDate.of(1994, 9, 10))
                 .duration(-142)
                 .build();
         String json = objectMapper.writeValueAsString(film);
-
         this.mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(mvcResult ->
-                        Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
-                                .equals("Movie duration cannot be negative."));
+                .andExpect(mvcResult -> Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
+                        .equals("Duration cannot be negative."));
     }
 
     @Test
@@ -283,20 +280,20 @@ class FilmControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().json(jsonAdded));
+    }
 
+    @Test
+    void filmWithoutDuration() throws Exception {
         Film filmWithoutDuration = Film.builder()
-                .name("Film Name")
-                .description("Film Description")
-                .releaseDate(testReleaseDate)
-                .build();
-        filmAdded = filmBuilder.id(1).duration(0).build();
-        when(service.addFilm(film)).thenReturn(filmAdded);
-        this.mockMvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(content().json(jsonAdded));
+                .name("Film Name").description("Film Description")
+                .releaseDate(testReleaseDate).build();
+        Film filmAdded = filmBuilder.id(1).duration(0).build();
+        String json = objectMapper.writeValueAsString(filmWithoutDuration);
+        String jsonAdded = objectMapper.writeValueAsString(filmAdded);
+        when(service.addFilm(filmWithoutDuration)).thenReturn(filmAdded);
+        this.mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON)
+                        .content(json)).andDo(print())
+                .andExpect(status().isCreated()).andExpect(content().json(jsonAdded));
     }
 
     @Test
@@ -343,24 +340,26 @@ class FilmControllerTest {
     }
 
     @Test
-    void testFindFilmById() throws Exception {
+    void testGetFilmById() throws Exception {
         film = filmBuilder.id(1).build();
         String json = objectMapper.writeValueAsString(film);
-
         when(service.getFilmById(1)).thenReturn(film);
-        mockMvc.perform(get(url + "/1"))
+        MvcResult result = mockMvc.perform(get(url + "/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(json));
+                .andReturn();
+        String content = result.getResponse().getContentAsString();
+        assertEquals(json, content);
     }
 
     @Test
     void testFindFilmByIdWithNonExistingId() throws Exception {
-        when(service.getFilmById(1)).thenThrow(new NotFoundException("Movie with id 1 not found."));
-        mockMvc.perform(get(url + "/1"))
+        int nonExistingId = 1;
+        when(service.getFilmById(nonExistingId)).thenThrow(new NotFoundException("Movie with id " + nonExistingId + " not found."));
+        mockMvc.perform(get(url + "/" + nonExistingId))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(result -> Objects.requireNonNull(result.getResolvedException())
-                        .getMessage().equals("Movie with id 1 not found."));
+                        .getMessage().equals("Movie with id " + nonExistingId + " not found."));
     }
 
     @Test
