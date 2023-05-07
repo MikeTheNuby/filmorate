@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.dao.AbstractDao;
 import ru.yandex.practicum.filmorate.dao.MpaDao;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -14,12 +15,10 @@ import java.util.List;
 
 @Repository
 @Slf4j
-public class MpaDaoImpl implements MpaDao {
-
-    private final JdbcTemplate jdbcTemplate;
+public class MpaDaoImpl extends AbstractDao implements MpaDao {
 
     public MpaDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+        super(jdbcTemplate);
     }
 
     @Override
