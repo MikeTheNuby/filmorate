@@ -23,8 +23,7 @@ import ru.yandex.practicum.filmorate.storage.impl.UserDbStorage;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -79,7 +78,7 @@ class FilmorateApplicationTests {
     }
 
     @Test
-    public void addUserTest() {
+    public void testAddUser() {
         User user = userBuilder.build();
         User addedUser = userStorage.addUser(user);
         assertThat(addedUser)
@@ -92,7 +91,6 @@ class FilmorateApplicationTests {
         User user = userBuilder.build();
         User addedUser = userStorage.addUser(user);
         User foundUser = userStorage.findUserById(addedUser.getId());
-
         assertThat(foundUser)
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("id", addedUser.getId())
@@ -110,39 +108,39 @@ class FilmorateApplicationTests {
         List<User> users = userStorage.getAllUsers();
         assertThat(users)
                 .isNotNull()
-                .isEqualTo(Collections.emptyList());
-
+                .isEmpty();
         User user = userBuilder.build();
         userStorage.addUser(user);
         users = userStorage.getAllUsers();
-        assertNotNull(users);
-        assertEquals(users.size(), 1);
-        assertEquals(users.get(0).getId(), 1);
+        assertThat(users)
+                .isNotNull()
+                .hasSize(1)
+                .contains(user);
     }
 
     @Test
-    public void testUpdateUser() {
+    public void shouldUpdateUser() {
         User user = userBuilder.build();
         userStorage.addUser(user);
-        User userToUpdate = userBuilder.id(1L).name("Name Updated").build();
-        User userUpdated = userStorage.updateUser(userToUpdate);
-
-        assertThat(userUpdated)
+        User updatedUser = userBuilder.id(1L).name("Name Updated").build();
+        User result = userStorage.updateUser(updatedUser);
+        assertThat(result)
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("id", 1L)
                 .hasFieldOrPropertyWithValue("name", "Name Updated");
+    }
 
-        NotFoundException ex = assertThrows(NotFoundException.class, () -> {
-            User userNotExist = userBuilder.id(-1L).build();
-            userStorage.updateUser(userNotExist);
-        });
-        assertEquals("User with id -1 not found", ex.getMessage());
+    @Test
+    public void shouldThrowNotFoundExceptionWhenUpdatingNonExistingUser() {
+        User userNotExist = userBuilder.id(-1L).build();
+        User finalUserNotExist = userNotExist;
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> userStorage.updateUser(finalUserNotExist));
+        assertEquals("User with id -1 not found", exception.getMessage());
 
-        ex = assertThrows(NotFoundException.class, () -> {
-            User userNotExist = userBuilder.id(999L).build();
-            userStorage.updateUser(userNotExist);
-        });
-        assertEquals("User with id 999 not found", ex.getMessage());
+        userNotExist = userBuilder.id(999L).build();
+        User finalUserNotExist1 = userNotExist;
+        exception = assertThrows(NotFoundException.class, () -> userStorage.updateUser(finalUserNotExist1));
+        assertEquals("User with id 999 not found", exception.getMessage());
     }
 
     @Test
@@ -158,19 +156,19 @@ class FilmorateApplicationTests {
         Film film = filmBuilder.build();
         Film addedFilm = filmStorage.addFilm(film);
         Film foundFilm = filmStorage.getFilmById(addedFilm.getId());
-        assertThat(foundFilm).isNotNull()
+        assertThat(foundFilm)
+                .isNotNull()
                 .hasFieldOrPropertyWithValue("id", 1L)
-                .hasFieldOrPropertyWithValue("mpa", mpaBuilder.name("G").build());
-
+                .extracting(Film::getMpa)
+                .isEqualTo(mpaBuilder.name("G").build());
         NotFoundException exception = assertThrows(NotFoundException.class, () -> filmStorage.getFilmById(-1L));
         assertEquals("Movie with id -1 not found.", exception.getMessage());
-
         exception = assertThrows(NotFoundException.class, () -> filmStorage.getFilmById(999L));
         assertEquals("Movie with id 999 not found.", exception.getMessage());
     }
 
     @Test
-    public void testListFilms() {
+    public void shouldListFilms() {
         List<Film> films = filmStorage.getAllFilms();
         assertThat(films)
                 .isNotNull()
@@ -178,33 +176,35 @@ class FilmorateApplicationTests {
 
         Film film = filmBuilder.build();
         filmStorage.addFilm(film);
+
         films = filmStorage.getAllFilms();
-        assertNotNull(films);
-        assertEquals(films.size(), 1);
-        assertEquals(films.get(0).getId(), 1);
+        assertThat(films)
+                .isNotNull()
+                .hasSize(1)
+                .element(0)
+                .hasFieldOrPropertyWithValue("id", 1L);
     }
 
     @Test
     public void shouldUpdateFilm() {
         Film film = filmBuilder.build();
         filmStorage.addFilm(film);
-        Film filmToUpdate = filmBuilder.id(1L).name("Film name Updated.").build();
-        Film filmUpdated = filmStorage.updateFilm(filmToUpdate);
-        assertThat(filmUpdated)
+        Film updatedFilm = filmBuilder.id(1L).name("Film Name Updated").build();
+        Film result = filmStorage.updateFilm(updatedFilm);
+        assertThat(result)
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("id", 1L)
-                .hasFieldOrPropertyWithValue("name", "Film name Updated.");
-
-        NotFoundException ex = assertThrows(
-                NotFoundException.class,
-                () -> filmStorage.updateFilm(filmBuilder.id(-1L).build())
-        );
+                .hasFieldOrPropertyWithValue("name", "Film Name Updated");
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> {
+            Film filmNotExist = filmBuilder.id(-1L).build();
+            filmStorage.updateFilm(filmNotExist);
+        });
         assertEquals("Movie with id -1 not found.", ex.getMessage());
 
-        ex = assertThrows(
-                NotFoundException.class,
-                () -> filmStorage.updateFilm(filmBuilder.id(999L).build())
-        );
+        ex = assertThrows(NotFoundException.class, () -> {
+            Film filmNotExist = filmBuilder.id(999L).build();
+            filmStorage.updateFilm(filmNotExist);
+        });
         assertEquals("Movie with id 999 not found.", ex.getMessage());
     }
 
@@ -214,21 +214,20 @@ class FilmorateApplicationTests {
         assertThat(topFilms)
                 .isNotNull()
                 .isEqualTo(Collections.emptyList());
+        Film film1 = filmBuilder.name("Film 1").mpa(mpaBuilder.name("G").build()).build();
+        Film film2 = filmBuilder.name("Film 2").mpa(mpaBuilder.name("G").build()).build();
+        filmStorage.addFilm(film1);
+        filmStorage.addFilm(film2);
 
-        filmStorage.addFilm(filmBuilder.build());
-        filmStorage.addFilm(filmBuilder.build());
-        userStorage.addUser(userBuilder.build());
-
-        topFilms = filmStorage.getPopularFilms(1);
-        assertNotNull(topFilms);
-        assertEquals(topFilms.size(), 1);
-        assertEquals(topFilms.get(0).getId(), 1);
-
+        User user = userBuilder.build();
+        userStorage.addUser(user);
         filmStorage.addLike(2, 1);
+
         topFilms = filmStorage.getPopularFilms(2);
-        assertNotNull(topFilms);
-        assertEquals(topFilms.size(), 2);
-        assertEquals(topFilms.get(0).getId(), 2);
+        assertThat(topFilms)
+                .isNotNull()
+                .hasSize(2)
+                .containsExactly(film2, film1);
     }
 
     @Test
@@ -239,17 +238,16 @@ class FilmorateApplicationTests {
         List<Genre> genres = genreDao.getGenresByFilm(1);
         assertNotNull(genres);
         assertEquals(genres.size(), 1);
-        assertEquals(genres.get(0).getId(), 1);
-
+        assertThat(genres.get(0)).hasFieldOrPropertyWithValue("id", 1);
         filmStorage.addGenreToFilm(1, 2);
         genres = genreDao.getGenresByFilm(1);
         assertNotNull(genres);
         assertEquals(genres.size(), 2);
-        assertEquals(genres.get(0).getId(), 1);
+        assertThat(genres.get(0)).hasFieldOrPropertyWithValue("id", 1);
     }
 
     @Test
-    public void testDeleteGenreFromFilm() {
+    public void shouldDeleteGenreFromFilm() {
         Film film = filmBuilder.build();
         filmStorage.addFilm(film);
         filmStorage.addGenreToFilm(1, 1);
@@ -278,7 +276,8 @@ class FilmorateApplicationTests {
         filmStorage.addGenreToFilm(1, 2);
         filmStorage.clearGenresFromFilm(1);
         List<Genre> genres = genreDao.getGenresByFilm(1);
-        assertThat(genres).isNotNull()
+        assertThat(genres)
+                .isNotNull()
                 .isEqualTo(Collections.emptyList());
     }
 
@@ -297,24 +296,22 @@ class FilmorateApplicationTests {
     }
 
     @Test
-    public void shouldListFriendsByUser() {
+    public void shouldAddFriendForUser() {
         User user = userBuilder.build();
         userStorage.addUser(user);
         User friend = userBuilder.name("friend").build();
         userStorage.addUser(friend);
+
+        friendshipDao.addFriend(user.getId(), friend.getId());
         List<Long> friends = friendshipDao.getFriendsByUser(user.getId());
         assertThat(friends)
                 .isNotNull()
-                .isEqualTo(Collections.emptyList());
-        friendshipDao.addFriend(user.getId(), friend.getId());
-        friends = friendshipDao.getFriendsByUser(user.getId());
-        assertNotNull(friends);
-        assertEquals(friends.size(), 1);
-        assertEquals(friends.get(0), friend.getId());
+                .hasSize(1)
+                .containsExactly(friend.getId());
     }
 
     @Test
-    public void shouldUpdateFriend() {
+    public void shouldUpdateFriendship() {
         User user = userBuilder.build();
         userStorage.addUser(user);
         User friend = userBuilder.name("friend").build();
@@ -329,15 +326,15 @@ class FilmorateApplicationTests {
     }
 
     @Test
-    public void shouldDeleteFriendship() {
+    public void testDeletingFriendship() {
         User user = userBuilder.build();
         userStorage.addUser(user);
         User friend = userBuilder.name("friend").build();
         userStorage.addUser(friend);
         friendshipDao.addFriend(user.getId(), friend.getId());
         friendshipDao.deleteFriend(user.getId(), friend.getId());
-        List<Long> friends = friendshipDao.getFriendsByUser(user.getId());
-        assertThat(friends).isNotNull();
+        List<Long> friendsList = friendshipDao.getFriendsByUser(user.getId());
+        assertThat(friendsList).isNotNull();
     }
 
     @Test
@@ -346,20 +343,19 @@ class FilmorateApplicationTests {
         filmStorage.addFilm(film);
         User user = userBuilder.build();
         userStorage.addUser(user);
-
-        filmStorage.addLike(1, 1);
-        List<Long> likes = filmStorage.getLikesByFilm(1);
-        assertNotNull(likes);
-        assertEquals(likes.size(), 1);
-        assertEquals(likes.get(0), 1);
+        filmStorage.addLike(film.getId(), user.getId());
+        List<Long> likesList = filmStorage.getLikesByFilm(film.getId());
+        assertThat(likesList).isNotNull();
+        assertThat(likesList.size()).isEqualTo(1);
+        assertThat(likesList.get(0)).isEqualTo(user.getId());
     }
 
     @Test
     public void shouldReturnEmptyListWhenNoLikesForFilmExist() {
         Film film = filmBuilder.build();
         filmStorage.addFilm(film);
-        List<Long> likes = filmStorage.getLikesByFilm(film.getId());
-        assertThat(likes).isNotNull().isEqualTo(Collections.emptyList());
+        List<Long> likesList = filmStorage.getLikesByFilm(film.getId());
+        assertThat(likesList).isNotNull().isEqualTo(Collections.emptyList());
     }
 
     @Test
@@ -398,41 +394,65 @@ class FilmorateApplicationTests {
 
     @Test
     public void shouldFindMpaById() {
+        User user = userBuilder.build();
+        userStorage.addUser(user);
+        User friend = userBuilder.name("friend").build();
+        userStorage.addUser(friend);
+        friendshipDao.addFriend(user.getId(), friend.getId());
+        friendshipDao.deleteFriend(user.getId(), friend.getId());
+        List<Long> friendsList = friendshipDao.getFriendsByUser(user.getId());
+        assertThat(friendsList).isNotNull();
+    }
+
+    @Test
+    public void testFindingMpaById() {
         Mpa mpa = mpaDao.findMpaById(1);
+        assertThat(mpa).isNotNull()
+                .hasFieldOrPropertyWithValue("id", 1)
+                .hasFieldOrPropertyWithValue("name", "G")
+                .hasFieldOrPropertyWithValue("description", "The film has no age restrictions");
+
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> mpaDao.findMpaById(-1));
+        assertEquals("MPA rating with id -1 not found", ex.getMessage());
+
+        ex = assertThrows(NotFoundException.class, () -> mpaDao.findMpaById(999));
+        assertEquals("MPA rating with id 999 not found", ex.getMessage());
+    }
+
+    @Test
+    public void shouldGetEmptyLikesListWhenNoLikesForFilmExist() {
+        User user = userBuilder.build();
+        userStorage.addUser(user);
+        User friend = userBuilder.name("friend").build();
+        userStorage.addUser(friend);
+        friendshipDao.addFriend(user.getId(), friend.getId());
+        friendshipDao.deleteFriend(user.getId(), friend.getId());
+        List<Long> friendsList = friendshipDao.getFriendsByUser(user.getId());
+        assertThat(friendsList).isNotNull();
+    }
+
+    @Test
+    public void testGettingEmptyLikesListWhenNoLikesForFilmExist() {
+        Mpa mpa = mpaDao.findMpaById(1);
+
         assertThat(mpa)
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("id", 1)
                 .hasFieldOrPropertyWithValue("name", "G")
                 .hasFieldOrPropertyWithValue("description", "The film has no age restrictions");
 
-        NotFoundException ex = assertThrows(
-                NotFoundException.class,
-                () -> mpaDao.findMpaById(-1)
-        );
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> mpaDao.findMpaById(-1));
         assertEquals("MPA rating with id -1 not found", ex.getMessage());
 
-        ex = assertThrows(
-                NotFoundException.class,
-                () -> mpaDao.findMpaById(999)
-        );
+        ex = assertThrows(NotFoundException.class, () -> mpaDao.findMpaById(999));
         assertEquals("MPA rating with id 999 not found", ex.getMessage());
-    }
-
-    @Test
-    public void shouldGetEmptyLikesListWhenNoLikesForFilmExist() {
-        Film film = filmBuilder.build();
-        filmStorage.addFilm(film);
-
-        List<Long> likes = filmStorage.getLikesByFilm(film.getId());
-
-        assertThat(likes).isNotNull().isEqualTo(Collections.emptyList());
     }
 
     @Test
     public void shouldReturnGenresList() {
         List<Genre> genres = genreDao.getGenres();
         assertNotNull(genres);
-        assertEquals(genres.size(), 6);
+        assertEquals(6, genres.size());
         assertThat(genres.get(0))
                 .hasFieldOrPropertyWithValue("id", 1)
                 .hasFieldOrPropertyWithValue("name", "Комедия");
@@ -443,6 +463,6 @@ class FilmorateApplicationTests {
         Film film = filmBuilder.build();
         filmStorage.addFilm(film);
         List<Genre> genres = genreDao.getGenresByFilm(film.getId());
-        assertThat(genres).isNotNull().isEqualTo(Collections.emptyList());
+        assertThat(genres).isNotNull().isEmpty();
     }
 }
