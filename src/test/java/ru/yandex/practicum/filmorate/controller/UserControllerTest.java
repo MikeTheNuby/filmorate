@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -71,8 +72,10 @@ class UserControllerTest {
 
     @Test
     void shouldReturnSingleUserList() throws Exception {
-        when(service.getAllUsers()).thenReturn(List.of(userBuilder.id(1).login("User 1 Login")
-                .email("user_1@google.com").name("User 1 Name").build()));
+        User user = userBuilder.id(1).login("User 1 Login")
+                .email("user_1@google.com").name("User 1 Name").build();
+        List<User> users = Collections.singletonList(user);
+        when(service.getAllUsers()).thenReturn(users);
         mockMvc.perform(get(url))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -82,16 +85,21 @@ class UserControllerTest {
 
     @Test
     void shouldReturnListWithTwoUsers() throws Exception {
-        when(service.getAllUsers()).thenReturn(List.of(
-                userBuilder.id(1).login("User 1 Login").email("user_1@google.com").name("User 1 Name").build(),
-                userBuilder.id(2).login("User 2 Login").email("user_2@google.com").name("User 2 Name").build()
-        ));
+        User user1 = userBuilder.id(1).login("User 1 Login")
+                .email("user_1@google.com").name("User 1 Name").build();
+        User user2 = userBuilder.id(2).login("User 2 Login")
+                .email("user_2@google.com").name("User 2 Name").build();
+        List<User> users = List.of(user1, user2);
+
+        when(service.getAllUsers()).thenReturn(users);
+
         mockMvc.perform(get(url))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[*].id", containsInAnyOrder(1, 2)))
-                .andExpect(jsonPath("$[*].login", containsInAnyOrder("User 1 Login", "User 2 Login")));
+                .andExpect(jsonPath("$[*].login", containsInAnyOrder("User 1 Login", "User 2 Login")))
+                .andExpect(jsonPath("$[*].email", containsInAnyOrder("user_1@google.com", "user_2@google.com")))
+                .andExpect(jsonPath("$[*].name", containsInAnyOrder("User 1 Name", "User 2 Name")));
     }
 
     @Test
@@ -116,9 +124,11 @@ class UserControllerTest {
         String json = objectMapper.writeValueAsString(user);
         String jsonAdded = objectMapper.writeValueAsString(userAdded);
         when(service.addUser(user)).thenReturn(userAdded);
-        mockMvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
+        mockMvc.perform(
+                        post(url)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(json)
+                )
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().json(jsonAdded));
@@ -126,48 +136,50 @@ class UserControllerTest {
 
     @Test
     void shouldThrowExceptionOnInvalidLogin() throws Exception {
-        user = userBuilder.login(" login").build();
+        User user = userBuilder.login(" login").build();
         String json = objectMapper.writeValueAsString(user);
-
         when(service.addUser(user)).thenReturn(user);
-        this.mockMvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
+
+        this.mockMvc.perform(
+                        post(url)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(json)
+                )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(mvcResult ->
-                        Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
-                                .equals("Login contains spaces."));
+                .andExpect(mvcResult -> Objects.requireNonNull(mvcResult.getResolvedException())
+                        .getMessage().equals("Login contains spaces."));
 
         user = userBuilder.login("").build();
         json = objectMapper.writeValueAsString(user);
-        this.mockMvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
+
+        this.mockMvc.perform(
+                        post(url)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(json)
+                )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(mvcResult ->
-                        Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
-                                .equals("Login cannot be empty."));
+                .andExpect(mvcResult -> Objects.requireNonNull(mvcResult.getResolvedException())
+                        .getMessage().equals("Login cannot be empty."));
     }
 
     @Test
     void shouldThrowExceptionOnInvalidEmail() throws Exception {
-        user = userBuilder.email("").build();
+        User user = userBuilder.email("").build();
         String json = objectMapper.writeValueAsString(user);
-
         when(service.addUser(user)).thenReturn(user);
         this.mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(mvcResult ->
-                        Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
-                                .equals("Email cannot be empty."));
+                .andExpect(mvcResult -> Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
+                        .equals("Email cannot be empty."));
 
         user = userBuilder.email("email@").build();
         json = objectMapper.writeValueAsString(user);
+
         this.mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -180,29 +192,28 @@ class UserControllerTest {
 
     @Test
     void shouldThrowExceptionOnInvalidBirthday() throws Exception {
-        user = userBuilder.birthday(null).build();
+        User user = userBuilder.birthday(null).build();
         String json = objectMapper.writeValueAsString(user);
-        System.out.println(json);
-
         this.mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(mvcResult ->
-                        Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
-                                .equals("Date of birth cannot be empty."));
+                        Objects.requireNonNull(mvcResult.getResolvedException())
+                                .getMessage().equals("Date of birth cannot be empty."));
 
         user = userBuilder.birthday(LocalDate.now().plusDays(1)).build();
         json = objectMapper.writeValueAsString(user);
+
         this.mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(mvcResult ->
-                        Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
-                                .equals("Date of birth cannot be from the future."));
+                        Objects.requireNonNull(mvcResult.getResolvedException())
+                                .getMessage().equals("Date of birth cannot be from the future."));
     }
 
     @Test
@@ -210,9 +221,12 @@ class UserControllerTest {
         User userToUpdate = userBuilder.id(1).name("Name").build();
         String jsonToUpdate = objectMapper.writeValueAsString(userToUpdate);
         when(service.updateUser(userToUpdate)).thenReturn(userToUpdate);
-        mockMvc.perform(put(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonToUpdate))
+
+        mockMvc.perform(
+                        put(url)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(jsonToUpdate)
+                )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonToUpdate));
@@ -247,10 +261,9 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldReturnEmptyFriendsListForGivenUserId() throws Exception {
+    void testGetEmptyFriendsListForUserId() throws Exception {
         when(service.getFriends(1)).thenReturn(Collections.emptyList());
-        this.mockMvc
-                .perform(get(url + "/1/friends"))
+        this.mockMvc.perform(get(url + "/1/friends"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
@@ -258,9 +271,14 @@ class UserControllerTest {
 
     @Test
     void shouldReturnSingleFriendsListForGivenUserId() throws Exception {
-        when(service.getFriends(1)).thenReturn(List.of(
-                userBuilder.id(2).login("User 2 Login").email("user_2@google.com").name("User 2 Name").build()));
-        mockMvc.perform(get(url + "/1/friends"))
+        User user2 = userBuilder
+                .id(2)
+                .login("User 2 Login")
+                .email("user_2@google.com")
+                .name("User 2 Name")
+                .build();
+        when(service.getFriends(1)).thenReturn(List.of(user2));
+        this.mockMvc.perform(get(url + "/1/friends"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()", is(1)))
@@ -268,13 +286,15 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldThrowNotFoundExceptionOnListFriendsForNonExistentId() throws Exception {
+    void testThrowNotFoundExceptionOnListFriendsForNonExistentId() throws Exception {
         when(service.getFriends(1)).thenThrow(new NotFoundException("User with id 1 not found."));
-        mockMvc.perform(get(url + "/1/friends"))
+        this.mockMvc.perform(get(url + "/1/friends"))
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(mvcResult -> Objects.requireNonNull(mvcResult.getResolvedException())
-                        .getMessage().equals("User with id 1 not found."));
+                .andExpect(result -> {
+                    String message = Objects.requireNonNull(result.getResolvedException()).getMessage();
+                    assertEquals("User with id 1 not found.", message);
+                });
     }
 
     @Test
@@ -289,7 +309,7 @@ class UserControllerTest {
     }
 
     @Test
-    void testCommonFriendsShouldReturnEmptyList() throws Exception {
+    void testGetEmptyCommonFriendsListForUserIds() throws Exception {
         when(service.getCommonFriends(1, 2)).thenReturn(Collections.emptyList());
         this.mockMvc.perform(get(url + "/1/friends/common/2"))
                 .andDo(print())
@@ -299,8 +319,12 @@ class UserControllerTest {
 
     @Test
     void testListSingleCommonFriend() throws Exception {
-        when(service.getCommonFriends(1, 2)).thenReturn(List.of(userBuilder.id(3)
-                .login("Login3").email("user_3@google.com").name("User 3 Name").build()));
+        User user3 = userBuilder.id(3)
+                .login("Login3")
+                .email("user_3@google.com")
+                .name("User 3 Name")
+                .build();
+        when(service.getCommonFriends(1, 2)).thenReturn(List.of(user3));
         mockMvc.perform(get(url + "/1/friends/common/2"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -313,13 +337,15 @@ class UserControllerTest {
         this.mockMvc.perform(get(url + "/friends/common/"))
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(mvcResult ->
-                        Objects.requireNonNull(mvcResult.getResolvedException()).getMessage().equals("Unknown Request."));
+                .andExpect(result -> {
+                    String message = Objects.requireNonNull(result.getResolvedException()).getMessage();
+                    assertEquals("No handler found for GET /users/friends/common/", message);
+                });
     }
 
     @Test
     void testFindUserById() throws Exception {
-        user = userBuilder.id(1).name("Login").build();
+        User user = userBuilder.id(1).name("Login").build();
         String json = objectMapper.writeValueAsString(user);
         when(service.findUserById(1)).thenReturn(user);
         mockMvc.perform(get(url + "/1"))
@@ -329,13 +355,15 @@ class UserControllerTest {
     }
 
     @Test
-    void testFindUserByNotExistingId() throws Exception {
+    void testFindUserByNonExistentId() throws Exception {
         when(service.findUserById(1)).thenThrow(new NotFoundException("User with id 1 not found."));
         mockMvc.perform(get(url + "/1"))
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(mvcResult -> Objects.requireNonNull(mvcResult.getResolvedException())
-                        .getMessage().equals("User with id 1 not found."));
+                .andExpect(result -> {
+                    String message = Objects.requireNonNull(result.getResolvedException()).getMessage();
+                    assertEquals("User with id 1 not found.", message);
+                });
     }
 
     @Test
@@ -344,7 +372,7 @@ class UserControllerTest {
         mockMvc.perform(put(url + "/1/friends/2"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()", is(1)))
+                .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0]", is(2)));
     }
 
