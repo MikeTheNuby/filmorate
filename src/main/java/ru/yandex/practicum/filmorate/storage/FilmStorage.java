@@ -16,7 +16,7 @@ public interface FilmStorage {
 
     Film updateFilm(Film film);
 
-    Film findFilmById(long id);
+    Film getFilmById(long id);
 
     void deleteGenreFromFilm(long filmId, int genreId);
 

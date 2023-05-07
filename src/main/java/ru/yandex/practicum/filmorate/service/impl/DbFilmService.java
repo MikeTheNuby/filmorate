@@ -39,8 +39,8 @@ public class DbFilmService implements FilmService {
     }
 
     @Override
-    public Film findFilmById(long id) {
-        Film film = storage.findFilmById(id);
+    public Film getFilmById(long id) {
+        Film film = storage.getFilmById(id);
         genreDao.getGenresByFilm(film.getId())
                 .forEach(film::addGenre);
         return film;
@@ -66,7 +66,7 @@ public class DbFilmService implements FilmService {
 
     @Override
     public List<Long> addLike(long filmId, long userId) {
-        findFilmById(filmId);
+        getFilmById(filmId);
         userService.findUserById(userId);
         storage.addLike(filmId, userId);
         return storage.getLikesByFilm(filmId);
@@ -74,7 +74,7 @@ public class DbFilmService implements FilmService {
 
     @Override
     public List<Long> deleteLike(long filmId, long userId) {
-        findFilmById(filmId);
+        getFilmById(filmId);
         userService.findUserById(userId);
         storage.deleteLike(filmId, userId);
         return storage.getLikesByFilm(filmId);

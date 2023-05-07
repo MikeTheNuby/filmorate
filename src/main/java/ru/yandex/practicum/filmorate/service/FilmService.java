@@ -8,7 +8,7 @@ public interface FilmService {
 
     List<Film> getAllFilms();
 
-    Film findFilmById(long id);
+    Film getFilmById(long id);
 
     Film addFilm(Film film);
 

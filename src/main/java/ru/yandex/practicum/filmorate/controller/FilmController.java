@@ -29,8 +29,8 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    public Film findFilmById(@PathVariable long id) {
-        return service.findFilmById(id);
+    public Film getFilmById(@PathVariable long id) {
+        return service.getFilmById(id);
     }
 
     @GetMapping("/popular")

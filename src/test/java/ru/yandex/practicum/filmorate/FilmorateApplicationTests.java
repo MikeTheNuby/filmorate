@@ -157,15 +157,15 @@ class FilmorateApplicationTests {
     public void shouldFindFilmById() {
         Film film = filmBuilder.build();
         Film addedFilm = filmStorage.addFilm(film);
-        Film foundFilm = filmStorage.findFilmById(addedFilm.getId());
+        Film foundFilm = filmStorage.getFilmById(addedFilm.getId());
         assertThat(foundFilm).isNotNull()
                 .hasFieldOrPropertyWithValue("id", 1L)
                 .hasFieldOrPropertyWithValue("mpa", mpaBuilder.name("G").build());
 
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> filmStorage.findFilmById(-1L));
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> filmStorage.getFilmById(-1L));
         assertEquals("Movie with id -1 not found.", exception.getMessage());
 
-        exception = assertThrows(NotFoundException.class, () -> filmStorage.findFilmById(999L));
+        exception = assertThrows(NotFoundException.class, () -> filmStorage.getFilmById(999L));
         assertEquals("Movie with id 999 not found.", exception.getMessage());
     }
 
