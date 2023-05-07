@@ -7,6 +7,7 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.dao.AbstractDao;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -18,13 +19,12 @@ import java.util.List;
 
 @Repository("UserDbStorage")
 @Slf4j
-public class UserDbStorage implements UserStorage {
+public class UserDbStorage extends AbstractDao implements UserStorage {
 
     private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
-    private final JdbcTemplate jdbcTemplate;
 
     public UserDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+        super(jdbcTemplate);
     }
 
     @Override
