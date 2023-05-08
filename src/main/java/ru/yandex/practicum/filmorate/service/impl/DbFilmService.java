@@ -5,11 +5,15 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service("DbFilmService")
@@ -32,10 +36,24 @@ public class DbFilmService implements FilmService {
 
     @Override
     public List<Film> getAllFilms() {
-        return storage.getAllFilms().stream()
-                .peek(film -> genreDao.getGenresByFilm(film.getId())
-                        .forEach(film::addGenre))
-                .collect(Collectors.toList());
+        List<Film> films = storage.getAllFilms();
+        List<Genre> genres = genreDao.getGenres();
+
+        Map<Long, List<Genre>> filmGenres = new HashMap<>();
+        for (Genre genre : genres) {
+            long filmId = genre.getId();
+            filmGenres.putIfAbsent(filmId, new ArrayList<>());
+            filmGenres.get(filmId).add(genre);
+        }
+
+        for (Film film : films) {
+            long filmId = film.getId();
+            if (filmGenres.containsKey(filmId)) {
+                film.setGenres(filmGenres.get(filmId));
+            }
+        }
+
+        return films;
     }
 
     @Override

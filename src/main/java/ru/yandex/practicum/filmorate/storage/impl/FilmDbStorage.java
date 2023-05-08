@@ -30,7 +30,11 @@ public class FilmDbStorage extends AbstractDao implements FilmStorage {
 
     @Override
     public List<Film> getAllFilms() {
-        String sql = "SELECT f.*, m.name AS mpa_name FROM films f JOIN mpa m ON f.mpa_id = m.mpa_id";
+        String sql = "SELECT f.*, m.name AS mpa_name, g.name AS genre_name \n" +
+                "FROM films f \n" +
+                "JOIN mpa m ON f.mpa_id = m.mpa_id \n" +
+                "JOIN film_genres fg ON f.film_id = fg.film_id \n" +
+                "JOIN genres g ON fg.genre_id = g.genre_id";
         return jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToFilm(rs));
     }
 

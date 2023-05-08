@@ -38,6 +38,11 @@ public class Film {
         genres.add(genre);
     }
 
+    public void setGenres(List<Genre> genres) {
+        this.genres.clear();
+        this.genres.addAll(genres);
+    }
+
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", name);
