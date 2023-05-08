@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
+@Slf4j
 class FilmorateApplicationTests {
 
     private final UserDbStorage userStorage;
@@ -177,7 +179,7 @@ class FilmorateApplicationTests {
 
         Film film = filmBuilder.build();
         filmStorage.addFilm(film);
-
+log.info("!!! " + filmStorage.getAllFilms().size());
         films = filmStorage.getAllFilms();
         assertThat(films)
                 .isNotNull()
