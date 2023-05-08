@@ -37,7 +37,7 @@ public class FriendshipDaoImpl extends AbstractDao implements FriendshipDao {
 
     @Override
     public void deleteFriend(long userId, long friendId) {
-        String sql = "DELETE from friendship WHERE (user_id = ? AND friend_id = ?)";
-        jdbcTemplate.update(sql, userId, friendId);
+        String deleteFriend = "DELETE from friendship WHERE (user_id = ? AND friend_id = ?)";
+        jdbcTemplate.update(deleteFriend, userId, friendId);
     }
 }

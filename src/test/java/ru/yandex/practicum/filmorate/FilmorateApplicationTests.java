@@ -171,7 +171,7 @@ class FilmorateApplicationTests {
     }
 
     @Test
-    public void shouldListFilms() {
+    public void shouldGetAllFilms() {
         List<Film> films = filmStorage.getAllFilms();
         assertThat(films)
                 .isNotNull()
@@ -179,7 +179,6 @@ class FilmorateApplicationTests {
 
         Film film = filmBuilder.build();
         filmStorage.addFilm(film);
-log.info("!!! " + filmStorage.getAllFilms().size());
         films = filmStorage.getAllFilms();
         assertThat(films)
                 .isNotNull()

@@ -29,15 +29,15 @@ public class UserDbStorage extends AbstractDao implements UserStorage {
 
     @Override
     public List<User> getAllUsers() {
-        String sql = "SELECT * FROM users";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToUser(rs));
+        String getAllUsers = "SELECT * FROM users";
+        return jdbcTemplate.query(getAllUsers, (rs, rowNum) -> mapRowToUser(rs));
     }
 
     @Override
     public User findUserById(long id) {
-        String sql = "SELECT * FROM users WHERE user_id = ?";
+        String findUserById = "SELECT * FROM users WHERE user_id = ?";
         try {
-            return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> mapRowToUser(rs), id);
+            return jdbcTemplate.queryForObject(findUserById, (rs, rowNum) -> mapRowToUser(rs), id);
         } catch (DataRetrievalFailureException e) {
             log.warn("User with id {} not found", id);
             throw new NotFoundException(String.format("User with id %d not found", id));
@@ -62,8 +62,8 @@ public class UserDbStorage extends AbstractDao implements UserStorage {
 
     @Override
     public User updateUser(User user) {
-        String sql = "UPDATE users SET email = ?, login = ?, name = ?, birthday = ? WHERE user_id = ?";
-        if (jdbcTemplate.update(sql, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), user.getId()) > 0) {
+        String updateUser = "UPDATE users SET email = ?, login = ?, name = ?, birthday = ? WHERE user_id = ?";
+        if (jdbcTemplate.update(updateUser, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), user.getId()) > 0) {
             return user;
         }
         log.warn("User with id {} not found", user.getId());

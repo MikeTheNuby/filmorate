@@ -30,16 +30,16 @@ public class FilmDbStorage extends AbstractDao implements FilmStorage {
 
     @Override
     public List<Film> getAllFilms() {
-        String sql = "select f.*, m.name as mpa_name from films as f join mpa as m on f.mpa_id = m.mpa_id";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToFilm(rs));
+        String getAllFilms = "SELECT f.*, m.name AS mpa_name FROM films AS f JOIN mpa AS m ON f.mpa_id = m.mpa_id";
+        return jdbcTemplate.query(getAllFilms, (rs, rowNum) -> mapRowToFilm(rs));
     }
 
     @Override
     public Film getFilmById(long id) {
-        String sql = "SELECT f.*, m.name AS mpa_name FROM films f JOIN mpa m ON f.mpa_id = m.mpa_id " +
+        String getFilmById = "SELECT f.*, m.name AS mpa_name FROM films f JOIN mpa m ON f.mpa_id = m.mpa_id " +
                 "WHERE f.film_id = ?";
         try {
-            return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> mapRowToFilm(rs), id);
+            return jdbcTemplate.queryForObject(getFilmById, (rs, rowNum) -> mapRowToFilm(rs), id);
         } catch (EmptyResultDataAccessException e) {
             log.warn("Movie with id {} not found.", id);
             throw new NotFoundException(String.format("Movie with id %d not found.", id));
@@ -68,11 +68,11 @@ public class FilmDbStorage extends AbstractDao implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        String sql = "UPDATE films SET " +
+        String updateFilm = "UPDATE films SET " +
                 "name = ?, description = ?, release_date = ?, duration = ?, mpa_id = ? " +
                 "WHERE film_id = ?";
         if (jdbcTemplate.update(
-                sql,
+                updateFilm,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
@@ -89,48 +89,48 @@ public class FilmDbStorage extends AbstractDao implements FilmStorage {
     }
 
     public List<Film> getPopularFilms(int count) {
-        String sql = "SELECT f.*, m.name AS mpa_name FROM films AS f " +
+        String getPopularFilms = "SELECT f.*, m.name AS mpa_name FROM films AS f " +
                 "JOIN mpa AS m ON f.mpa_id = m.mpa_id " + "LEFT JOIN " +
                 "(SELECT film_id, COUNT(user_id) AS likes_qty FROM likes GROUP BY film_id " +
                 "ORDER BY likes_qty DESC limit ?) " + "AS top ON f.film_id = top.film_id " +
                 "ORDER BY top.likes_qty DESC " + "limit ?";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToFilm(rs), count, count);
+        return jdbcTemplate.query(getPopularFilms, (rs, rowNum) -> mapRowToFilm(rs), count, count);
     }
 
     @Override
     public void addGenreToFilm(long filmId, int genreId) {
-        String sql = "INSERT INTO film_genre(film_id, genre_id) " + "VALUES (?, ?)";
-        jdbcTemplate.update(sql, filmId, genreId);
+        String addGenreToFilm = "INSERT INTO film_genre(film_id, genre_id) " + "VALUES (?, ?)";
+        jdbcTemplate.update(addGenreToFilm, filmId, genreId);
     }
 
     @Override
     public void deleteGenreFromFilm(long filmId, int genreId) {
-        String sql = "DELETE FROM film_genre WHERE film_id = ? AND genre_id = ?";
-        jdbcTemplate.update(sql, filmId, genreId);
+        String deleteGenreFromFilm = "DELETE FROM film_genre WHERE film_id = ? AND genre_id = ?";
+        jdbcTemplate.update(deleteGenreFromFilm, filmId, genreId);
     }
 
     @Override
     public void clearGenresFromFilm(long filmId) {
-        String sql = "DELETE FROM film_genre WHERE film_id = ?";
-        jdbcTemplate.update(sql, filmId);
+        String clearGenresFromFilm = "DELETE FROM film_genre WHERE film_id = ?";
+        jdbcTemplate.update(clearGenresFromFilm, filmId);
     }
 
     @Override
     public List<Long> getLikesByFilm(long filmId) {
-        String sql = "SELECT user_id FROM likes WHERE film_id = ?";
-        return jdbcTemplate.queryForList(sql, Long.class, filmId);
+        String getLikesByFilm = "SELECT user_id FROM likes WHERE film_id = ?";
+        return jdbcTemplate.queryForList(getLikesByFilm, Long.class, filmId);
     }
 
     @Override
     public void addLike(long filmId, long userId) {
-        String sql = "INSERT INTO likes(film_id, user_id) VALUES (?, ?)";
-        jdbcTemplate.update(sql, filmId, userId);
+        String addLike = "INSERT INTO likes(film_id, user_id) VALUES (?, ?)";
+        jdbcTemplate.update(addLike, filmId, userId);
     }
 
     @Override
     public void deleteLike(long filmId, long userId) {
-        String sql = "DELETE FROM likes WHERE film_id = ? AND user_id = ?";
-        jdbcTemplate.update(sql, filmId, userId);
+        String deleteLike = "DELETE FROM likes WHERE film_id = ? AND user_id = ?";
+        jdbcTemplate.update(deleteLike, filmId, userId);
     }
 
     private Film mapRowToFilm(ResultSet rs) throws SQLException {
