@@ -4,80 +4,97 @@
 
 ![db_map](src/main/resources/db_map.png)
 
-Эта база данных содержит информацию о фильмах, жанрах, рейтингах MPAA, пользователях, дружбе
-между ними и лайках, которые они ставят фильмам.
+База данных содержит информацию о фильмах, жанрах, рейтингах MPAA, пользователях, дружбе между ними
+и лайках, которые они ставят фильмам.
 
-Схема состоит из семи таблиц: `film`, `rating_list`, `genre_list`, `film_genre`, `service_user`,
-`friendship` и `like`.
+Схема состоит из семи таблиц: `films`, `mpa`, `genre`, `film_genre`, `users`, `friendship`
+и `likes`.
 
-Таблица `film` содержит информацию о фильмах, включая
-их `id`, `name`, `description`, `releaseDate`, `duration` и рейтинг `mpa_rating`.
+Таблица `films` содержит информацию о фильмах, включая
+их `film_id`, `name`, `description`, `release_date`, `duration` и рейтинг `mpa_id`.
 
-Таблица `rating_list` содержит список возможных рейтингов MPAA с их `id` и `rating_title`.
+Таблица `mpa` содержит список возможных рейтингов MPA с их `mpa_id` и `name`.
 
-Таблица `genre_list` содержит список жанров с их `id` и `genre_title`.
+Таблица `genre` содержит список жанров с их `genre_id` и `name`.
 
 Таблица `film_genre` является связующей таблицей, которая соединяет фильмы с их жанрами. Она
-содержит две колонки: `film_id` и `genre_id`.
+содержит три колонки: `film_genre_id`, `film_id` и `genre_id`.
 
-Таблица `service_user` содержит информацию о пользователях сервиса, включая
-их `id`, `email`, `login`, `name`, `birthday` и статус.
+Таблица `users` содержит информацию о пользователях сервиса, включая
+их `user_id`, `email`, `login`, `name`, `birthday`.
 
-Таблица `friendship` представляет дружбу между пользователями. Она содержит две колонки: `user1_id`
-и `user2_id`.
+Таблица `friendship` представляет дружбу между пользователями. Она содержит четыре
+колонки: `friendship_id`, `user_id`, `friend_id` и `status`.
 
-Таблица `like` представляет лайки фильмов пользователями. Она содержит две колонки: `user_id`
-и `film_id`.
+Таблица `likes` представляет лайки фильмов пользователями. Она содержит три
+колонки: `like_id`, `user_id` и `film_id`.
 
 ## Примеры запросов
 
 Добавить новый фильм
+
 ```sql
-INSERT INTO film (id, name, description, releaseDate, duration, mpa_rating)
+INSERT INTO films (film_id, name, description, release_date, duration, mpa_id)
 VALUES (1, 'The Shawshank Redemption', 'Two imprisoned men bond over a number of years...',
-        '1994-09-22', 142, 'R');
+        '1994-09-22', 142, 1);
 ```
-Добавить новый рейтинг MPAA
+
+Добавить новый рейтинг MPA
+
 ```sql
-INSERT INTO rating_list (rating_title)
-VALUES ('R');
+INSERT INTO mpa (mpa_id, name)
+VALUES (1, 'R');
 ```
+
 Добавить новый жанр
+
 ```sql
-INSERT INTO genre_list (genre_title)
-VALUES ('Drama');
+INSERT INTO genre (genre_id, name)
+VALUES (1, 'Drama');
 ```
+
 Связать фильм с жанром
+
 ```sql
-INSERT INTO film_genre (film_id, genre_id)
-VALUES (1, 1);
+INSERT INTO film_genre (film_genre_id, film_id, genre_id)
+VALUES (1, 1, 1);
 ```
+
 Добавить нового пользователя
+
 ```sql
-INSERT INTO service_user (id, email, login, name, birthday)
+INSERT INTO users (user_id, email, login, name, birthday)
 VALUES (1, 'andy@example.com', 'andy', 'Andy Dufresne', '1959-06-06');
 ```
+
 Добавить запрос на дружбу от одного пользователя к другому
+
 ```sql
-INSERT INTO friendship (user1_id, user2_id)
-VALUES (1, 2);
+INSERT INTO friendship (friendship_id, user_id, friend_id)
+VALUES (1, 1, 2);
 ```
+
 Поставить лайк фильму
+
 ```sql
-INSERT INTO like (user_id, film_id)
-VALUES (1, 1);
+INSERT INTO likes (like_id, user_id, film_id)
+VALUES (1, 1, 1);
 ```
+
 Найти все фильмы с лайками от пользователя
+
 ```sql
 SELECT f.*
-FROM film f
-JOIN like l ON f.id = l.film_id
+FROM films f
+         JOIN likes l ON f.film_id = l.film_id
 WHERE l.user_id = 1;
 ```
+
 Найти все жанры связанные с фильмом
+
 ```sql
 SELECT g.*
-FROM genre_list g
-JOIN film_genre fg ON g.id = fg.genre_id
+FROM genre g
+         JOIN film_genre fg ON g.genre_id = fg.genre_id
 WHERE fg.film_id = 1;
 ```
